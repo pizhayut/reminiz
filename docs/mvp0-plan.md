@@ -36,7 +36,7 @@
 - คำสั่งทุกหน้ามีเสียงอ่าน (expo-speech; ถ้าเครื่องไม่มีเสียงภาษานั้นให้ซ่อนปุ่มลำโพง)
 - Haptic เบาๆ ตอนตอบถูก
 
-**ภาพ:** ชุดของคุ้นตา ~60 ภาพ แบ่งหมวด (ผลไม้ไทย, สัตว์, ของในบ้าน, อาหาร) จาก **Microsoft Fluent Emoji (MIT license)** แปลงเป็น PNG ฝังในแอป — ใช้ได้เชิงพาณิชย์ ใส่ credit ในหน้า "เกี่ยวกับ". สุ่มชุดไม่ซ้ำในวันเดียวกัน
+**ภาพ:** ชุดของคุ้นตา 60 ภาพ แบ่งหมวด (ผลไม้, สัตว์, ของในบ้าน, อาหาร, ธรรมชาติ) วาดด้วยฟอนต์อีโมจิของระบบในเครื่อง (Unicode ≤ 11 เพื่อให้ Android รุ่นเก่าแสดงได้) → ไม่มีไฟล์ภาพ ไม่มีเรื่องลิขสิทธิ์. สุ่มไม่ซ้ำในรอบเดียวกัน
 
 ---
 
@@ -68,7 +68,7 @@
 - **ไม่ใส่** analytics, crash reporting, ads, notifications, network library ใดๆ (ถ้าใส่ = ต้องแก้ Privacy Label)
 - `ios.supportsTablet: false`, portrait only, `ITSAppUsesNonExemptEncryption: false`
 - Bundle ID / package: `com.renzoft.reminiz`, ชื่อแอป **Reminiz**
-- `site/` — หน้าเว็บ static 2 หน้า `/privacy` และ `/support` (TH/EN) deploy บน Vercel ที่ **reminiz.renzoft.com**
+- `site/` — หน้าเว็บ static `/privacy`, `/terms`, `/support` (TH/EN ในหน้าเดียว) deploy บน Vercel ที่ **reminiz.renzoft.com**
 - EAS Build + EAS Submit
 
 ---

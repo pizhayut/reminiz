@@ -9,6 +9,10 @@ Reminiz is a family app for older adults: daily brain games and family letters (
 
 **Design reference:** `design/screens/*.png` (rendered mockups) and `design/source/*.dc.html` (HTML mockups, layout and copy only; rebuild them as React Native screens, do not embed the HTML).
 
+## Current release: MVP0 (offline, no backend)
+
+See `docs/mvp0-plan.md` and `docs/release-guide.md`. `apps/mobile` is an Expo app with no network, no login and no data collection: welcome (choose call name) → home tree → Quick Eye game → done. State lives in AsyncStorage (`src/state/store.tsx`). `site/` holds the privacy/terms/support pages deployed to reminiz.renzoft.com on Vercel. Do not add network, analytics, permissions or health claims to MVP0.
+
 ## MVP1 scope (deadline 20 Nov 2026)
 
 Build:
