@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Validation dashboard</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1D6B63}a:hover{color:#134C46}
+</style>
+</helmet>
+<div style="box-sizing: border-box; min-height: 820px; background: #F6F4EF; color: #1E2422; font-family: 'Atkinson Hyperlegible', system-ui, sans-serif; padding: 24px">
+<div style="max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px">
+<header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<h1 style="margin: 0; font-size: 26px">Validation dashboard</h1>
+<p style="margin: 0; font-size: 15px; color: #4F5753">How well change detection works, by group</p>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button style="height: 44px; padding: 0 16px; border-radius: 10px; border: 2px solid #1D6B63; background: #E3EFEC; font-family: inherit; font-size: 15px; color: #1E2422">Simulated cohort</button>
+<button style="height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid #D9D5CC; background: #FFFFFF; font-family: inherit; font-size: 15px; color: #1E2422">Pilot (after challenge)</button>
+</div>
+</header>
+<div style="background: #FBEBDD; border: 1px solid #E8C3A0; border-radius: 12px; padding: 12px 14px; font-size: 15px">Simulated people with known, planted changes. This tests the system, not clinical accuracy.</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px">
+<div style="background: #FFFFFF; border: 1px solid #D9D5CC; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 6px"><p style="margin: 0; font-size: 14px; color: #4F5753">Completion</p><p style="margin: 0; font-size: 28px; font-weight: 700">[value]</p></div>
+<div style="background: #FFFFFF; border: 1px solid #D9D5CC; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 6px"><p style="margin: 0; font-size: 14px; color: #4F5753">Test–retest ICC</p><p style="margin: 0; font-size: 28px; font-weight: 700">[value]</p></div>
+<div style="background: #FFFFFF; border: 1px solid #D9D5CC; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 6px"><p style="margin: 0; font-size: 14px; color: #4F5753">Sensitivity</p><p style="margin: 0; font-size: 28px; font-weight: 700">[value]</p></div>
+<div style="background: #FFFFFF; border: 1px solid #D9D5CC; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 6px"><p style="margin: 0; font-size: 14px; color: #4F5753">Specificity</p><p style="margin: 0; font-size: 28px; font-weight: 700">[value]</p></div>
+<div style="background: #FFFFFF; border: 1px solid #D9D5CC; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 6px"><p style="margin: 0; font-size: 14px; color: #4F5753">False referrals / 1,000 per year</p><p style="margin: 0; font-size: 28px; font-weight: 700">[value]</p></div>
+<div style="background: #FFFFFF; border: 1px solid #D9D5CC; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 6px"><p style="margin: 0; font-size: 14px; color: #4F5753">Months from change to flag</p><p style="margin: 0; font-size: 28px; font-weight: 700">[value]</p></div>
+</div>
+<section style="background: #FFFFFF; border: 1px solid #D9D5CC; border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 19px">By group: results should not differ by language, age or education</h2>
+<div style="overflow-x: auto">
+<table style="width: 100%; min-width: 720px; border-collapse: collapse; font-size: 15px">
+<thead><tr style="text-align: left; color: #4F5753"><th style="padding: 8px; border-bottom: 1px solid #D9D5CC">Group</th><th style="padding: 8px; border-bottom: 1px solid #D9D5CC">Completion</th><th style="padding: 8px; border-bottom: 1px solid #D9D5CC">ICC</th><th style="padding: 8px; border-bottom: 1px solid #D9D5CC">Sensitivity</th><th style="padding: 8px; border-bottom: 1px solid #D9D5CC">Specificity</th><th style="padding: 8px; border-bottom: 1px solid #D9D5CC">False referrals</th></tr></thead>
+<tbody>
+<tr><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">Arabic</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td></tr>
+<tr><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">English</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td></tr>
+<tr><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">Age 60–69</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td></tr>
+<tr><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">Age 70–79</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td></tr>
+<tr><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">Age 80+</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td></tr>
+<tr><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">Fewer school years</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td><td style="padding: 8px; border-bottom: 1px solid #EEEAE2">[ ]</td></tr>
+<tr><td style="padding: 8px">More school years</td><td style="padding: 8px">[ ]</td><td style="padding: 8px">[ ]</td><td style="padding: 8px">[ ]</td><td style="padding: 8px">[ ]</td><td style="padding: 8px">[ ]</td></tr>
+</tbody>
+</table>
+</div>
+<p style="margin: 0; font-size: 13px; color: #4F5753">Values fill in from the simulation run. A gap between groups is flagged for review.</p>
+</section>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":820}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Before the check-in</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1D6B63}a:hover{color:#134C46}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F6F4EF; color: #1E2422; font-family: 'Atkinson Hyperlegible', system-ui, sans-serif; padding: 32px 24px; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<a href="Main.dc.html" aria-label="Back to home" style="width: 52px; height: 52px; border-radius: 26px; border: 1px solid #D9D5CC; background: #FFFFFF; display: flex; align-items: center; justify-content: center">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1E2422" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+</a>
+<p style="margin: 0; font-size: 18px; color: #4F5753">Step 1 of 4</p>
+<button aria-label="Read the questions aloud" style="width: 52px; height: 52px; border-radius: 26px; border: 1px solid #D9D5CC; background: #FFFFFF; display: flex; align-items: center; justify-content: center">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1E2422" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path></svg>
+</button>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h1 style="margin: 0; font-size: 28px">A few quick questions</h1>
+<p style="margin: 0; font-size: 18px; line-height: 1.4; color: #4F5753">These help us read today’s results fairly.</p>
+</div>
+<fieldset style="margin: 0; border: 1px solid #D9D5CC; border-radius: 16px; background: #FFFFFF; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+<legend style="font-size: 20px; font-weight: 700; padding: 0 4px">Did you sleep well last night?</legend>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<button style="height: 56px; border-radius: 14px; border: 2px solid #1D6B63; background: #E3EFEC; color: #1E2422; font-size: 20px; font-weight: 700; font-family: inherit">Yes</button>
+<button style="height: 56px; border-radius: 14px; border: 1px solid #D9D5CC; background: #FFFFFF; color: #1E2422; font-size: 20px; font-family: inherit">Not really</button>
+</div>
+</fieldset>
+<fieldset style="margin: 0; border: 1px solid #D9D5CC; border-radius: 16px; background: #FFFFFF; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+<legend style="font-size: 20px; font-weight: 700; padding: 0 4px">Feeling unwell, or a new medicine?</legend>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<button style="height: 56px; border-radius: 14px; border: 1px solid #D9D5CC; background: #FFFFFF; color: #1E2422; font-size: 20px; font-family: inherit">Yes</button>
+<button style="height: 56px; border-radius: 14px; border: 2px solid #1D6B63; background: #E3EFEC; color: #1E2422; font-size: 20px; font-weight: 700; font-family: inherit">No</button>
+</div>
+</fieldset>
+<fieldset style="margin: 0; border: 1px solid #D9D5CC; border-radius: 16px; background: #FFFFFF; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+<legend style="font-size: 20px; font-weight: 700; padding: 0 4px">How do you feel today?</legend>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+<button style="height: 56px; border-radius: 14px; border: 2px solid #1D6B63; background: #E3EFEC; color: #1E2422; font-size: 20px; font-weight: 700; font-family: inherit">Good</button>
+<button style="height: 56px; border-radius: 14px; border: 1px solid #D9D5CC; background: #FFFFFF; color: #1E2422; font-size: 20px; font-family: inherit">Okay</button>
+<button style="height: 56px; border-radius: 14px; border: 1px solid #D9D5CC; background: #FFFFFF; color: #1E2422; font-size: 20px; font-family: inherit">Low</button>
+</div>
+</fieldset>
+<fieldset style="margin: 0; border: 1px solid #D9D5CC; border-radius: 16px; background: #FFFFFF; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+<legend style="font-size: 20px; font-weight: 700; padding: 0 4px">Glasses or hearing aid on?</legend>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+<button style="height: 56px; border-radius: 14px; border: 2px solid #1D6B63; background: #E3EFEC; color: #1E2422; font-size: 20px; font-weight: 700; font-family: inherit">Yes</button>
+<button style="height: 56px; border-radius: 14px; border: 1px solid #D9D5CC; background: #FFFFFF; color: #1E2422; font-size: 20px; font-family: inherit">No</button>
+<button style="height: 56px; border-radius: 14px; border: 1px solid #D9D5CC; background: #FFFFFF; color: #1E2422; font-size: 18px; font-family: inherit">Don’t use</button>
+</div>
+</fieldset>
+<a href="CheckinTask.dc.html" style="margin-top: auto; display: flex; align-items: center; justify-content: center; height: 64px; border-radius: 16px; background: #1D6B63; color: #FFFFFF; font-size: 22px; font-weight: 700; text-decoration: none">Continue</a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

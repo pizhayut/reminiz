@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Summary for doctor visit (PDF)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 595px; height: 842px; box-sizing: border-box; background: #FFFFFF; color: #1E2422; font-family: 'Atkinson Hyperlegible', system-ui, sans-serif; padding: 32px 36px; display: flex; flex-direction: column; gap: 14px; font-size: 12px; line-height: 1.4">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #1D6B63; padding-bottom: 10px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<p style="margin: 0; font-size: 18px; font-weight: 700">Summary for doctor visit</p>
+<p style="margin: 0; color: #4F5753">Reminiz · prepared by family · [date]</p>
+</div>
+<div style="text-align: right">
+<p style="margin: 0; font-weight: 700">Mrs. N.S. · 78 years</p>
+<p style="margin: 0; color: #4F5753">Coverage: Universal Coverage</p>
+</div>
+</div>
+<section style="display: flex; flex-direction: column; gap: 6px">
+<p style="margin: 0; font-size: 13px; font-weight: 700">1. Monthly check-in trend (combined score of 3 tasks)</p>
+<svg width="523" height="150" viewBox="0 0 523 150" role="img" aria-label="Sample trend: six check-ins within usual range, last two below it">
+<rect x="30" y="34" width="480" height="46" fill="#E3EFEC"></rect>
+<text x="36" y="48" font-size="10" fill="#1D6B63">Usual range (own baseline)</text>
+<polyline points="60,58 120,54 180,60 240,56 300,62 360,58 420,92 480,100" fill="none" stroke="#1E2422" stroke-width="1.5"></polyline>
+<circle cx="60" cy="58" r="3" fill="#1E2422"></circle><circle cx="120" cy="54" r="3" fill="#1E2422"></circle><circle cx="180" cy="60" r="3" fill="#1E2422"></circle><circle cx="240" cy="56" r="3" fill="#1E2422"></circle><circle cx="300" cy="62" r="3" fill="#1E2422"></circle><circle cx="360" cy="58" r="3" fill="#1E2422"></circle><circle cx="420" cy="92" r="4" fill="#A3261E"></circle><circle cx="480" cy="100" r="4" fill="#A3261E"></circle>
+<line x1="30" y1="122" x2="510" y2="122" stroke="#B9B3A7"></line>
+<text x="60" y="138" font-size="10" text-anchor="middle" fill="#4F5753">1</text><text x="120" y="138" font-size="10" text-anchor="middle" fill="#4F5753">2</text><text x="180" y="138" font-size="10" text-anchor="middle" fill="#4F5753">3</text><text x="240" y="138" font-size="10" text-anchor="middle" fill="#4F5753">4</text><text x="300" y="138" font-size="10" text-anchor="middle" fill="#4F5753">5</text><text x="360" y="138" font-size="10" text-anchor="middle" fill="#4F5753">6</text><text x="420" y="138" font-size="10" text-anchor="middle" fill="#4F5753">7</text><text x="480" y="138" font-size="10" text-anchor="middle" fill="#4F5753">8</text>
+</svg>
+<p style="margin: 0">Below her usual range on 2 check-ins in a row (RCI [−2.1], [−2.3]). Tasks: symbol match, delayed picture memory, attention. Sample data.</p>
+</section>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+<section style="display: flex; flex-direction: column; gap: 4px">
+<p style="margin: 0; font-size: 13px; font-weight: 700">2. Context on check-in days</p>
+<p style="margin: 0">Slept poorly once. No new medicine. Mood okay. Glasses on.</p>
+</section>
+<section style="display: flex; flex-direction: column; gap: 4px">
+<p style="margin: 0; font-size: 13px; font-weight: 700">3. What the family noticed</p>
+<p style="margin: 0">2 of 2 relatives: more trouble with appointments and paying bills over the last few months.</p>
+</section>
+<section style="display: flex; flex-direction: column; gap: 4px">
+<p style="margin: 0; font-size: 13px; font-weight: 700">4. Medicines</p>
+<p style="margin: 0">Blood pressure tablet, morning<br>Diabetes tablet, twice a day</p>
+</section>
+<section style="display: flex; flex-direction: column; gap: 4px">
+<p style="margin: 0; font-size: 13px; font-weight: 700">5. Conditions</p>
+<p style="margin: 0">High blood pressure, diabetes. Last eye check: [date]. Hearing: not checked.</p>
+</section>
+</div>
+<section style="display: flex; flex-direction: column; gap: 4px; background: #F6F4EF; border-radius: 8px; padding: 10px 12px">
+<p style="margin: 0; font-size: 13px; font-weight: 700">Questions the family wants to ask</p>
+<p style="margin: 0">[typed by family before the visit]</p>
+</section>
+<p style="margin: auto 0 0; font-size: 10.5px; color: #4F5753; border-top: 1px solid #D9D5CC; padding-top: 8px">Not a diagnosis. Check-in tasks are Reminiz’s own tasks, not MoCA, TMSE or MMSE, and are compared only with this person’s earlier results. Provisional thresholds pending Thai reference data.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":595,"height":842}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

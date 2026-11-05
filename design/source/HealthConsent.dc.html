@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>What Reminiz can use</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1D6B63}a:hover{color:#134C46}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F6F4EF; color: #1E2422; font-family: 'Atkinson Hyperlegible', system-ui, sans-serif; padding: 28px 20px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h1 style="margin: 0; font-size: 26px">What Reminiz can use</h1>
+<p style="margin: 0; font-size: 15px; line-height: 1.4; color: #4F5753">Mum decides. Each item is optional and can be turned off at any time. Check-ins work without any of them.</p>
+</div>
+<sc-for list="{{items}}" as="item" hint-placeholder-count="5">
+<label style="background: #FFFFFF; border: 1px solid #D9D5CC; border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; gap: 12px">
+<span style="flex-grow: 1; display: flex; flex-direction: column; gap: 3px">
+<span style="font-size: 17px; font-weight: 700">{{item.title}}</span>
+<span style="font-size: 14px; line-height: 1.35; color: #4F5753">{{item.detail}}</span>
+</span>
+<input type="checkbox" role="switch" checked="{{item.on}}" style="width: 28px; height: 28px; accent-color: #1D6B63">
+</label>
+</sc-for>
+<a href="CaregiverReport.dc.html" style="margin-top: auto; display: flex; align-items: center; justify-content: center; height: 56px; border-radius: 14px; background: #1D6B63; color: #FFFFFF; font-size: 19px; font-weight: 700; text-decoration: none">Save choices</a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {
+items: [
+{ title: 'Sleep and steps', detail: 'From Apple Health or Health Connect', on: true },
+{ title: 'Blood pressure, sugar, cholesterol', detail: 'From clinic records you link', on: true },
+{ title: 'Mood questions', detail: '2 short questions each month', on: true },
+{ title: 'Family history', detail: 'Memory problems in close relatives', on: false },
+{ title: 'Eye and hearing checks', detail: 'When they were last checked, and a link to a hearing test', on: true }
+]
+};
+}
+}
+</script>
+</body>
+</html>

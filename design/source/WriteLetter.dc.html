@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Write a letter</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1D6B63}a:hover{color:#134C46}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F6F4EF; color: #1E2422; font-family: 'Atkinson Hyperlegible', system-ui, sans-serif; padding: 28px 20px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<p style="margin: 0; font-size: 14px; color: #4F5753">Mum’s tree</p>
+<h1 style="margin: 0; font-size: 26px">Write a letter to Mum</h1>
+</div>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 15px; font-weight: 700">Your letter
+<textarea rows="7" style="font-family: inherit; font-size: 17px; line-height: 1.45; padding: 12px; border: 1px solid #D9D5CC; border-radius: 14px; background: #FFFFFF; color: #1E2422">Proud of you, Mum! You did your check-in this morning. See you for lunch on Sunday.</textarea>
+</label>
+<p style="margin: 0; font-size: 14px; color: #4F5753">Short and large is easiest to read. Mum can also hear it read aloud.</p>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<button style="height: 52px; border-radius: 12px; border: 1px solid #D9D5CC; background: #FFFFFF; font-family: inherit; font-size: 16px; color: #1E2422">Add a photo</button>
+<button style="height: 52px; border-radius: 12px; border: 1px solid #D9D5CC; background: #FFFFFF; font-family: inherit; font-size: 16px; color: #1E2422">Record voice</button>
+</div>
+<div style="background: #FFFFFF; border: 1px solid #D9D5CC; border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px">
+<p style="margin: 0; font-size: 15px; font-weight: 700">Letters sent this month: 3</p>
+<p style="margin: 0; font-size: 14px; color: #4F5753">Mum opened the last one on Tuesday.</p>
+</div>
+<a href="#" style="margin-top: auto; display: flex; align-items: center; justify-content: center; height: 56px; border-radius: 14px; background: #1D6B63; color: #FFFFFF; font-size: 19px; font-weight: 700; text-decoration: none">Send to Mum’s mailbox</a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
