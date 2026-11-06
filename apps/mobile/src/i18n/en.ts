@@ -62,7 +62,7 @@ const en = {
     privacyLink: 'Privacy policy',
     termsLink: 'Terms of use',
     supportLink: 'Help and contact',
-    credits: 'Made by Renzoft.',
+    credits: 'Made by Renz Soft Co., Ltd.',
     close: 'Close',
   },
   common: {

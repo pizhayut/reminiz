@@ -63,7 +63,7 @@ const th = {
     privacyLink: 'นโยบายความเป็นส่วนตัว',
     termsLink: 'ข้อกำหนดการใช้งาน',
     supportLink: 'ช่วยเหลือและติดต่อเรา',
-    credits: 'พัฒนาโดย Renzoft',
+    credits: 'พัฒนาโดย บริษัท เรนซ์ ซอฟต์ จำกัด',
     close: 'ปิด',
   },
   common: {
