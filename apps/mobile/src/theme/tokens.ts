@@ -6,7 +6,6 @@ export const colors = {
   primaryPressed: '#1F4D24',
   primarySoft: '#E5EFE2',
   leafFill: '#DCEBD6',
-  canopy: 'rgba(190, 220, 178, 0.5)',
   blossom: '#F5B09F',
   blossomCenter: '#F8DA8C',
   blossomGlow: 'rgba(252, 214, 196, 0.32)',

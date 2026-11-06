@@ -14,7 +14,7 @@ import {
 import { useEffect, useMemo } from 'react';
 import { useDerivedValue, useReducedMotion, useSharedValue, withDelay, withTiming, type SharedValue } from 'react-native-reanimated';
 
-import { buildTree, poseTree, type Pose, type TreeModel } from '@/tree/model';
+import { buildTree, poseTree, type Pose, type TreeModel, type TreeStyleName } from '@/tree/model';
 import { colors } from '@/theme/tokens';
 
 export type TreeProps = {
@@ -23,10 +23,14 @@ export type TreeProps = {
   size?: number;
   /** Bloom the newest flower in with an animation (after a round that earned it). */
   newFlower?: boolean;
+  variant?: TreeStyleName;
 };
 
 // One tree for everyone, so it always looks the same and never changes shape.
-const MODEL = buildTree();
+const models: Partial<Record<TreeStyleName, TreeModel>> = {};
+function modelFor(name: TreeStyleName): TreeModel {
+  return (models[name] ??= buildTree(name));
+}
 
 function useBranchPath(pose: SharedValue<Pose>, m: TreeModel, depth: number) {
   return usePathValue((b: SkPathBuilder) => {
@@ -57,7 +61,7 @@ function useFlowerPath(
       const i = m.flowerNode[k];
       const grow = k === shown - 1 ? bloom.value : 1;
       if (grow <= 0.01) continue;
-      const r = s * 0.03 * grow;
+      const r = s * m.flowerSize * grow;
       const x = p.x1[i];
       const y = p.y1[i];
       if (part === 'glow') {
@@ -75,8 +79,8 @@ function useFlowerPath(
   });
 }
 
-export default function TreeCanvas({ flowers, size = 300, newFlower = false }: TreeProps) {
-  const m = MODEL;
+export default function TreeCanvas({ flowers, size = 300, newFlower = false, variant = 'cloud' }: TreeProps) {
+  const m = modelFor(variant);
   const reduce = useReducedMotion();
   const clock = useClock();
   const W = size;
@@ -102,10 +106,8 @@ export default function TreeCanvas({ flowers, size = 300, newFlower = false }: T
   const d3 = useBranchPath(pose, m, 3);
   const d4 = useBranchPath(pose, m, 4);
   const d5 = useBranchPath(pose, m, 5);
-  const d6 = useBranchPath(pose, m, 6);
-  const d7 = useBranchPath(pose, m, 7);
-  const branches = [d0, d1, d2, d3, d4, d5, d6, d7];
-  const width = (d: number) => Math.max(1.6, s * 0.03 * Math.pow(0.7, d));
+  const branches = [d0, d1, d2, d3, d4, d5];
+  const width = (d: number) => Math.max(2, s * 0.032 * Math.pow(0.72, d));
 
   const leaves = usePathValue((b) => {
     'worklet';
@@ -213,9 +215,11 @@ export default function TreeCanvas({ flowers, size = 300, newFlower = false }: T
       </Circle>
 
       {/* Watercolour-like canopy masses for a soft, dreamy crown */}
-      <Path path={blobs} color={colors.canopy}>
-        <BlurMask blur={s * 0.045} style="normal" />
-      </Path>
+      {m.blobNode.length > 0 && (
+        <Path path={blobs} color={m.blobColor}>
+          <BlurMask blur={s * m.blobBlur} style="normal" />
+        </Path>
+      )}
 
       <Path path={ground} style="stroke" strokeWidth={Math.max(2.5, s * 0.012)} strokeCap="round" color={colors.primary} />
 

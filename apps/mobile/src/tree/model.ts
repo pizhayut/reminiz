@@ -27,6 +27,9 @@ export type TreeModel = {
   /** Branch tips in the order flowers appear (spread around the crown). */
   flowerNode: number[];
   pollen: { x: number[]; y: number[]; r: number[]; speed: number[]; phase: number[] };
+  flowerSize: number;
+  blobBlur: number;
+  blobColor: string;
   /** Rest-pose extent in tree units (x right, y up from the trunk base), leaves included. */
   bounds: { minX: number; maxX: number; maxY: number };
 };
@@ -44,10 +47,89 @@ function mulberry32(seed: number) {
 
 export const MAX_FLOWERS = 36;
 
-function buildOne(seed: number): TreeModel {
+/** Look of the tree. Kept small on purpose so older phones animate it smoothly. */
+export type TreeStyle = {
+  maxDepth: number;
+  triChance: number; // chance a branch splits in three
+  targetNodes: number; // preferred branch count when picking a seed
+  leavesPerTip: number; // teardrop leaves at each twig end
+  leafSize: [number, number];
+  curlChance: number; // chance a twig end gets a logo-like curl
+  curlSize: [number, number];
+  blobDepths: number[]; // branch depths whose ends get a soft canopy cloud
+  blobSize: [number, number];
+  pollen: number;
+  flowerSize: number;
+  blobBlur: number; // blur radius, fraction of tree size
+  blobColor: string;
+  /** Branch spread (radians) at the first forks and further up. */
+  spread: [number, number];
+  lenRatio: [number, number];
+};
+
+export const TREE_STYLES = {
+  // A: a few big leaves at the twig ends, clean line art.
+  leaf: {
+    maxDepth: 4,
+    triChance: 0.3,
+    targetNodes: 46,
+    leavesPerTip: 2,
+    leafSize: [0.075, 0.1],
+    curlChance: 0,
+    curlSize: [0, 0],
+    blobDepths: [],
+    blobSize: [0, 0],
+    pollen: 8,
+    flowerSize: 0.042,
+    blobBlur: 0,
+    blobColor: 'transparent',
+    spread: [0.62, 0.5],
+    lenRatio: [0.8, 0.9],
+  },
+  // B: soft watercolour clouds for the crown, no single leaves.
+  cloud: {
+    maxDepth: 4,
+    triChance: 0.3,
+    targetNodes: 46,
+    leavesPerTip: 0,
+    leafSize: [0, 0],
+    curlChance: 0,
+    curlSize: [0, 0],
+    blobDepths: [3, 4],
+    blobSize: [0.13, 0.18],
+    pollen: 12,
+    flowerSize: 0.042,
+    blobBlur: 0.018,
+    blobColor: 'rgba(188, 222, 176, 0.8)',
+    spread: [0.62, 0.5],
+    lenRatio: [0.8, 0.9],
+  },
+  // C: every twig ends in a loop, like the logo's line.
+  loop: {
+    maxDepth: 4,
+    triChance: 0.25,
+    targetNodes: 40,
+    leavesPerTip: 0,
+    leafSize: [0, 0],
+    curlChance: 1,
+    curlSize: [0.06, 0.085],
+    blobDepths: [],
+    blobSize: [0, 0],
+    pollen: 8,
+    flowerSize: 0.042,
+    blobBlur: 0,
+    blobColor: 'transparent',
+    spread: [0.62, 0.5],
+    lenRatio: [0.8, 0.9],
+  },
+} satisfies Record<string, TreeStyle>;
+
+export type TreeStyleName = keyof typeof TREE_STYLES;
+
+function buildOne(seed: number, style: TreeStyle): TreeModel {
   const rand = mulberry32(seed);
   const r = (lo: number, hi: number) => lo + (hi - lo) * rand();
-  const maxDepth = 7;
+  const maxDepth = style.maxDepth;
   const m: TreeModel = {
     n: 0,
     parent: [],
@@ -69,6 +151,9 @@ function buildOne(seed: number): TreeModel {
     curlSize: [],
     flowerNode: [],
     pollen: { x: [], y: [], r: [], speed: [], phase: [] },
+    flowerSize: style.flowerSize,
+    blobBlur: style.blobBlur,
+    blobColor: style.blobColor,
     bounds: { minX: 0, maxX: 0, maxY: 0 },
   };
   const tips: { node: number; world: number; x: number; y: number }[] = [];
@@ -86,15 +171,15 @@ function buildOne(seed: number): TreeModel {
 
   const grow = (parent: number, depth: number, world: number, x: number, y: number, len: number, phase: number) => {
     if (depth > maxDepth) return;
-    const children = depth === 0 ? 2 : rand() < (depth <= 3 ? 0.32 : 0.14) ? 3 : 2;
-    const spread = depth <= 1 ? r(0.5, 0.7) : r(0.36, 0.54);
+    const children = depth === 0 ? 2 : rand() < (depth <= 2 ? style.triChance : style.triChance / 2) ? 3 : 2;
+    const spread = (depth <= 1 ? style.spread[0] : style.spread[1]) * r(0.85, 1.15);
     for (let k = 0; k < children; k++) {
-      if (depth >= 3 && rand() < 0.1) continue; // prune a few for an organic outline
+      if (depth >= 3 && rand() < 0.08) continue; // prune a few for an organic outline
       const side = children === 3 ? k - 1 : k === 0 ? -1 : 1;
       let rel = side * spread * r(0.8, 1.15) + r(-0.08, 0.08);
       // Gentle pull back toward upright so the crown stays round, like the logo circle.
       rel += -world * 0.1;
-      const childLen = len * r(0.74, 0.84) * (side === 0 ? 0.9 : 1);
+      const childLen = len * r(style.lenRatio[0], style.lenRatio[1]) * (side === 0 ? 0.9 : 1);
       const w = world + rel;
       const nx = x + Math.sin(w) * childLen;
       const ny = y + Math.cos(w) * childLen;
@@ -105,32 +190,30 @@ function buildOne(seed: number): TreeModel {
   };
 
   // Trunk, with a slight hand-drawn lean and curve.
-  const trunkLen = 0.22;
+  const trunkLen = 0.2;
   const trunk = add(-1, 0, r(-0.05, 0.05), trunkLen, r(-0.12, 0.12), 0);
   grow(trunk, 1, m.angle[trunk], Math.sin(m.angle[trunk]) * trunkLen, Math.cos(m.angle[trunk]) * trunkLen, trunkLen, 0);
 
-  // Leaves on the outer twigs; curls on a few of them.
+  // Leaves and curls on the twig ends; soft clouds on chosen branch levels.
   for (let i = 0; i < m.n; i++) {
-    if (m.depth[i] < 4) continue;
-    const count = m.depth[i] === maxDepth ? 2 : 1;
-    for (let k = 0; k < count; k++) {
+    if (m.depth[i] !== maxDepth) continue;
+    for (let k = 0; k < style.leavesPerTip; k++) {
       m.leafNode.push(i);
-      m.leafT.push(count === 2 ? (k === 0 ? 1 : r(0.45, 0.75)) : r(0.5, 1));
-      m.leafAngle.push((k === 0 ? -1 : 1) * r(0.35, 0.95));
-      m.leafSize.push(r(0.04, 0.06));
+      m.leafT.push(k === 0 ? 1 : r(0.55, 0.8));
+      m.leafAngle.push((k === 0 ? -1 : 1) * r(0.3, 0.8));
+      m.leafSize.push(r(style.leafSize[0], style.leafSize[1]));
       m.leafPhase.push(r(0, Math.PI * 2));
     }
-    if (m.depth[i] === maxDepth && rand() < 0.28) {
+    if (rand() < style.curlChance) {
       m.curlNode.push(i);
       m.curlSide.push(rand() < 0.5 ? -1 : 1);
-      m.curlSize.push(r(0.03, 0.045));
+      m.curlSize.push(r(style.curlSize[0], style.curlSize[1]));
     }
   }
-
   for (let i = 0; i < m.n; i++) {
-    if (m.depth[i] === 4 || m.depth[i] === 5) {
+    if (style.blobDepths.includes(m.depth[i])) {
       m.blobNode.push(i);
-      m.blobSize.push(r(0.07, 0.11) * (m.depth[i] === 4 ? 1.25 : 1));
+      m.blobSize.push(r(style.blobSize[0], style.blobSize[1]));
     }
   }
 
@@ -157,7 +240,7 @@ function buildOne(seed: number): TreeModel {
     }
   }
 
-  for (let k = 0; k < 18; k++) {
+  for (let k = 0; k < style.pollen; k++) {
     m.pollen.x.push(r(-0.6, 0.6));
     m.pollen.y.push(r(0, 1.2));
     m.pollen.r.push(r(0.004, 0.011));
@@ -166,7 +249,7 @@ function buildOne(seed: number): TreeModel {
   }
 
   const rest = poseTree(m, 0, 0, 0, 1);
-  const pad = 0.07; // leaves and flowers reach past the twig ends
+  const pad = Math.max(0.07, style.leafSize[1], style.curlSize[1] * 1.2, style.flowerSize * 1.6, style.blobSize[1] + style.blobBlur * 2);
   let minX = 0;
   let maxX = 0;
   let maxY = 0;
@@ -184,16 +267,17 @@ function buildOne(seed: number): TreeModel {
  * Pick the most balanced tree among a few seeds: a round crown (like the logo circle),
  * centred over the trunk. Deterministic, so everyone gets the same tree.
  */
-export function buildTree(): TreeModel {
+export function buildTree(name: TreeStyleName = 'cloud'): TreeModel {
+  const style: TreeStyle = TREE_STYLES[name];
   let best: TreeModel | null = null;
   let bestScore = Infinity;
-  for (let seed = 1; seed <= 40; seed++) {
-    const m = buildOne(seed);
+  for (let seed = 1; seed <= 60; seed++) {
+    const m = buildOne(seed, style);
     const { minX, maxX, maxY } = m.bounds;
     const w = maxX - minX;
     const centre = Math.abs((maxX + minX) / 2) / w;
     const aspect = Math.abs(w / maxY - 0.92);
-    const score = centre * 4 + aspect * 0.6 + Math.abs(m.n - 260) / 300;
+    const score = centre * 4 + aspect * 0.6 + Math.abs(m.n - style.targetNodes) / 40;
     if (score < bestScore) {
       bestScore = score;
       best = m;
