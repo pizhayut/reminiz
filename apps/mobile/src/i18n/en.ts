@@ -25,7 +25,7 @@ const en = {
     playToday: 'Play today',
     playAgain: 'Play again',
     playedToday: "You played today. Today's flower is on your tree.",
-    readyToday: "Tap Play today to get today's flower.",
+    readyToday: 'Tap Play today to get your flower of the day.',
     newWeek: 'A new week has begun. Tap Play today to get your first flower.',
     about: 'About this app',
     speak: 'Tap Play today to start your game.',
