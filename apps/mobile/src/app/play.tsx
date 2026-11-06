@@ -9,7 +9,6 @@ import { AppText, BackButton, BigButton, Screen, SpeakButton } from '@/component
 import { makeTrial, pickTargets, type Item, type Trial } from '@/game/items';
 import { LEVELS, step, type Staircase } from '@/lib/staircase';
 import { say, stopSpeaking, useCanSpeak } from '@/lib/speech';
-import { DAYS_PER_FLOWER_WEEK, treeState } from '@/lib/tree';
 import { useStore } from '@/state/store';
 import { colors, radius, space } from '@/theme/tokens';
 
@@ -22,7 +21,7 @@ type Phase = 'intro' | 'fixation' | 'show' | 'blank' | 'choose' | 'correct';
 
 export default function Play() {
   const { t } = useTranslation();
-  const { level: savedLevel, language, playDays, finishRound } = useStore();
+  const { level: savedLevel, language, finishRound } = useStore();
   const canSpeak = useCanSpeak(language);
 
   const [targets] = useState(() => pickTargets(ROUND_LENGTH));
@@ -71,10 +70,9 @@ export default function Play() {
   };
 
   const finish = () => {
-    const before = treeState(playDays);
+    // The first round of the day blooms that day's flower.
     const first = finishRound(stairs.current.level);
-    const newFlower = first && before.daysThisWeek === DAYS_PER_FLOWER_WEEK - 1;
-    router.replace({ pathname: '/done', params: { first: first ? '1' : '0', flower: newFlower ? '1' : '0' } });
+    router.replace({ pathname: '/done', params: { first: first ? '1' : '0' } });
   };
 
   const choose = (item: Item) => {

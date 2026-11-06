@@ -1,6 +1,7 @@
 import type { TFunction } from 'i18next';
 
 import type { Language } from '@/i18n';
+import type { Scene } from '@/lib/scene';
 
 /** Name choices shown on the welcome screen, per language (Thai separates maternal and paternal grandparents). */
 export const CALL_NAME_OPTIONS: Record<Language, string[]> = {
@@ -13,9 +14,9 @@ export function displayName(callName: string | null, t: TFunction): string | nul
   return t(`callName.${callName}`, { defaultValue: '' }) || null;
 }
 
-export function greetingKey(d: Date = new Date()): 'greeting_morning' | 'greeting_afternoon' | 'greeting_evening' {
-  const h = d.getHours();
-  if (h < 12) return 'greeting_morning';
-  if (h < 17) return 'greeting_afternoon';
+/** Greeting that matches the home screen's sky. */
+export function greetingKey(scene: Scene): 'greeting_morning' | 'greeting_afternoon' | 'greeting_evening' {
+  if (scene === 'morning') return 'greeting_morning';
+  if (scene === 'day') return 'greeting_afternoon';
   return 'greeting_evening';
 }

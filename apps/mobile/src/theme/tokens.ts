@@ -7,7 +7,12 @@ export const colors = {
   primarySoft: '#E5EFE2',
   leafFill: '#DCEBD6',
   blossom: '#F5B09F',
-  blossomCenter: '#F8DA8C',
+  /**
+   * Flower colour for the weekday it was earned (Thai day colours, Sunday first).
+   * A small easter egg: not explained in the app. See docs/mvp0-plan.md.
+   */
+  dayBlossom: ['#E8574F', '#F5C93E', '#F59BC3', '#62C46A', '#F58A34', '#62A6EC', '#9C7AD6'],
+  blossomCenter: '#FFF3C9',
   blossomGlow: 'rgba(252, 214, 196, 0.32)',
   accent: '#E07A3F',
   warmSoft: '#FBEBDD',

@@ -10,14 +10,14 @@ import { useStore } from '@/state/store';
 
 export default function Done() {
   const { t } = useTranslation();
-  const { first, flower } = useLocalSearchParams<{ first?: string; flower?: string }>();
+  const { first } = useLocalSearchParams<{ first?: string }>();
   const { playDays, language } = useStore();
   const canSpeak = useCanSpeak(language);
   const tree = treeState(playDays);
   const isFirst = first === '1';
-  const newFlower = flower === '1';
+  const newFlower = isFirst;
 
-  const message = newFlower ? t('done.newFlower') : isFirst ? t('done.grew') : t('done.againToday');
+  const message = newFlower ? t('done.newFlower') : t('done.againToday');
 
   useEffect(() => {
     if (canSpeak) say(`${t('done.title')}. ${message}`, language);
@@ -31,7 +31,7 @@ export default function Done() {
       <AppText variant="display" bold center accessibilityRole="header" style={{ marginTop: 24 }}>
         {t('done.title')}
       </AppText>
-      <Tree flowers={tree.flowers} newFlower={newFlower} size={300} />
+      <Tree flowerDays={tree.flowerDays} newFlower={newFlower} size={300} />
       <Card warm={newFlower}>
         <AppText variant="body" bold center>
           {message}

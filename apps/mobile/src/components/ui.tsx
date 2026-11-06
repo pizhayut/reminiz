@@ -61,11 +61,14 @@ export function Screen({
   scroll = true,
   footer,
   style,
+  transparent,
 }: {
   children: ReactNode;
   scroll?: boolean;
   footer?: ReactNode;
   style?: StyleProp<ViewStyle>;
+  /** Let a backdrop behind the screen show through. */
+  transparent?: boolean;
 }) {
   const body = scroll ? (
     <ScrollView contentContainerStyle={[styles.content, style]} showsVerticalScrollIndicator={false}>
@@ -75,7 +78,7 @@ export function Screen({
     <View style={[styles.content, { flex: 1 }, style]}>{children}</View>
   );
   return (
-    <SafeAreaView style={styles.screen} edges={['top', 'bottom', 'left', 'right']}>
+    <SafeAreaView style={[styles.screen, transparent && { backgroundColor: 'transparent' }]} edges={['top', 'bottom', 'left', 'right']}>
       {body}
       {footer ? <View style={styles.footer}>{footer}</View> : null}
     </SafeAreaView>
@@ -88,12 +91,16 @@ export function BigButton({
   kind = 'primary',
   style,
   accessibilityHint,
+  color = colors.primary,
+  pressedColor = colors.primaryPressed,
 }: {
   label: string;
   onPress: () => void;
   kind?: 'primary' | 'secondary';
   style?: StyleProp<ViewStyle>;
   accessibilityHint?: string;
+  color?: string;
+  pressedColor?: string;
 }) {
   const primary = kind === 'primary';
   return (
@@ -105,7 +112,7 @@ export function BigButton({
       style={({ pressed }) => [
         styles.button,
         primary
-          ? { backgroundColor: pressed ? colors.primaryPressed : colors.primary, minHeight: tapTarget.primary }
+          ? { backgroundColor: pressed ? pressedColor : color, minHeight: tapTarget.primary }
           : {
               backgroundColor: pressed ? colors.primarySoft : colors.surface,
               borderColor: colors.primary,

@@ -1,7 +1,8 @@
-// The tree is always full grown. Playing earns flowers: one for each week with 3 days of play.
-// Computed from the list of days played; flowers never wilt or reset.
+// Flowers come from the days played: one flower for each day played this week (Monday to
+// Sunday), so at most 7. Every Monday the week starts fresh and last week's flowers fall.
+// Computed from the list of days played; nothing else is stored.
 
-export const DAYS_PER_FLOWER_WEEK = 3;
+export const MAX_FLOWERS_PER_WEEK = 7;
 
 /** Local calendar date as YYYY-MM-DD. */
 export function localDay(d: Date = new Date()): string {
@@ -24,28 +25,42 @@ export function weekKey(day: string): string {
   return localDay(d);
 }
 
+function previousWeekKey(day: string): string {
+  const d = parseDay(weekKey(day));
+  d.setDate(d.getDate() - 7);
+  return localDay(d);
+}
+
 export type TreeState = {
   careDays: number;
+  /** Flowers on the tree now: days played this week. */
   flowers: number;
-  /** Days played in the current week, capped at DAYS_PER_FLOWER_WEEK. */
-  daysThisWeek: number;
+  /** Weekday of each flower this week, oldest first (0 = Sunday ... 6 = Saturday). */
+  flowerDays: number[];
+  /** Flowers from last week, which fall when a new week starts and nothing is played yet. */
+  lastWeekFlowers: number;
+  lastWeekDays: number[];
   playedToday: boolean;
 };
 
 export function treeState(playDays: readonly string[], today: string = localDay()): TreeState {
   const unique = Array.from(new Set(playDays));
-  const perWeek = new Map<string, number>();
-  for (const day of unique) {
+  const thisWeek = weekKey(today);
+  const lastWeek = previousWeekKey(today);
+  const sorted = unique.slice().sort();
+  const flowerDays: number[] = [];
+  const lastWeekDays: number[] = [];
+  for (const day of sorted) {
     const k = weekKey(day);
-    perWeek.set(k, (perWeek.get(k) ?? 0) + 1);
+    if (k === thisWeek) flowerDays.push(parseDay(day).getDay());
+    else if (k === lastWeek) lastWeekDays.push(parseDay(day).getDay());
   }
-  let flowers = 0;
-  for (const n of perWeek.values()) if (n >= DAYS_PER_FLOWER_WEEK) flowers++;
-
   return {
     careDays: unique.length,
-    flowers,
-    daysThisWeek: Math.min(perWeek.get(weekKey(today)) ?? 0, DAYS_PER_FLOWER_WEEK),
+    flowers: Math.min(flowerDays.length, MAX_FLOWERS_PER_WEEK),
+    flowerDays: flowerDays.slice(0, MAX_FLOWERS_PER_WEEK),
+    lastWeekFlowers: Math.min(lastWeekDays.length, MAX_FLOWERS_PER_WEEK),
+    lastWeekDays: lastWeekDays.slice(0, MAX_FLOWERS_PER_WEEK),
     playedToday: unique.includes(today),
   };
 }

@@ -12,19 +12,26 @@ import {
   type SkPathBuilder,
 } from '@shopify/react-native-skia';
 import { useEffect, useMemo } from 'react';
-import { useDerivedValue, useReducedMotion, useSharedValue, withDelay, withTiming, type SharedValue } from 'react-native-reanimated';
+import { Easing, useDerivedValue, useReducedMotion, useSharedValue, withDelay, withTiming, type SharedValue } from 'react-native-reanimated';
 
+import { sceneInk, type Scene } from '@/lib/scene';
 import { buildTree, poseTree, type Pose, type TreeModel, type TreeStyleName } from '@/tree/model';
 import { colors } from '@/theme/tokens';
 
 export type TreeProps = {
-  /** Number of flowers in bloom. */
-  flowers: number;
+  /** Weekday (0 = Sunday) of each flower in bloom, oldest first; each takes its day's colour. */
+  flowerDays: number[];
   size?: number;
   /** Bloom the newest flower in with an animation (after a round that earned it). */
   newFlower?: boolean;
+  /** Last week's flowers falling to the ground (shown at the start of a new week). */
+  fallenDays?: number[];
+  scene?: Scene;
   variant?: TreeStyleName;
 };
+
+/** Each falling flower's progress (0 = on the branch, 1 = on the ground) for the shared clock `fall`. */
+const FALL_END = 1.7;
 
 // One tree for everyone, so it always looks the same and never changes shape.
 const models: Partial<Record<TreeStyleName, TreeModel>> = {};
@@ -52,24 +59,38 @@ function useFlowerPath(
   shown: number,
   s: number,
   part: 'petal' | 'center' | 'glow',
+  /** When set, draw the flowers falling: progress clock and ground height. */
+  fall?: { clock: SharedValue<number>; groundY: number },
+  /** Only flowers whose weekday matches (for per-colour petal paths). */
+  only?: { days: number[]; day: number },
 ) {
   return usePathValue((b: SkPathBuilder) => {
     'worklet';
     const p = pose.value;
     const t = time.value;
     for (let k = 0; k < shown; k++) {
+      if (only && only.days[k] !== only.day) continue;
       const i = m.flowerNode[k];
-      const grow = k === shown - 1 ? bloom.value : 1;
+      const grow = fall ? 1 : k === shown - 1 ? bloom.value : 1;
       if (grow <= 0.01) continue;
       const r = s * m.flowerSize * grow;
-      const x = p.x1[i];
-      const y = p.y1[i];
+      let x = p.x1[i];
+      let y = p.y1[i];
+      let spin = k * 1.3 + 0.15 * Math.sin(t * 0.8 + k);
+      if (fall) {
+        // Staggered, drifting fall like a petal in the breeze, then rest on the ground.
+        const start = shown > 1 ? (k * 0.5) / (shown - 1) : 0;
+        const u = Math.min(1, Math.max(0, (fall.clock.value - start) / 0.75));
+        const e = u * u * (3 - 2 * u);
+        y = y + (fall.groundY - r * 0.5 - y) * e;
+        x = x + Math.sin(u * 6 + k) * s * 0.07 * u;
+        spin += u * 4;
+      }
       if (part === 'glow') {
         b.addCircle(x, y, r * 2.1);
       } else if (part === 'center') {
         b.addCircle(x, y, r * 0.38);
       } else {
-        const spin = k * 1.3 + 0.15 * Math.sin(t * 0.8 + k);
         for (let q = 0; q < 5; q++) {
           const a = spin + (q * Math.PI * 2) / 5;
           b.addCircle(x + Math.cos(a) * r * 0.62, y + Math.sin(a) * r * 0.62, r * 0.52);
@@ -79,8 +100,41 @@ function useFlowerPath(
   });
 }
 
-export default function TreeCanvas({ flowers, size = 300, newFlower = false, variant = 'cloud' }: TreeProps) {
+const WEEK = [0, 1, 2, 3, 4, 5, 6];
+
+/** One petal path per weekday colour (hook count is fixed at 7). */
+function useDayPetals(
+  pose: SharedValue<Pose>,
+  time: SharedValue<number>,
+  bloom: SharedValue<number>,
+  m: TreeModel,
+  days: number[],
+  s: number,
+  fall?: { clock: SharedValue<number>; groundY: number },
+) {
+  const n = days.length;
+  return [
+    useFlowerPath(pose, time, bloom, m, n, s, 'petal', fall, { days, day: 0 }),
+    useFlowerPath(pose, time, bloom, m, n, s, 'petal', fall, { days, day: 1 }),
+    useFlowerPath(pose, time, bloom, m, n, s, 'petal', fall, { days, day: 2 }),
+    useFlowerPath(pose, time, bloom, m, n, s, 'petal', fall, { days, day: 3 }),
+    useFlowerPath(pose, time, bloom, m, n, s, 'petal', fall, { days, day: 4 }),
+    useFlowerPath(pose, time, bloom, m, n, s, 'petal', fall, { days, day: 5 }),
+    useFlowerPath(pose, time, bloom, m, n, s, 'petal', fall, { days, day: 6 }),
+  ];
+}
+
+export default function TreeCanvas({
+  flowerDays,
+  size = 300,
+  newFlower = false,
+  fallenDays = [],
+  scene = 'day',
+  variant = 'cloud',
+}: TreeProps) {
   const m = modelFor(variant);
+  const ink = sceneInk[scene];
+  const night = scene === 'night';
   const reduce = useReducedMotion();
   const clock = useClock();
   const W = size;
@@ -90,12 +144,24 @@ export default function TreeCanvas({ flowers, size = 300, newFlower = false, var
   const oy = H * 0.9;
   const s = Math.min((W * 0.96) / (maxX - minX), (oy - H * 0.03) / maxY); // pixels per tree unit
   const ox = W / 2 - ((maxX + minX) / 2) * s;
-  const shown = Math.min(flowers, m.flowerNode.length);
+  const days = flowerDays.slice(0, m.flowerNode.length);
+  const shown = days.length;
 
   const bloom = useSharedValue(newFlower && !reduce ? 0 : 1);
   useEffect(() => {
     if (newFlower && !reduce) bloom.value = withDelay(500, withTiming(1, { duration: 1600 }));
   }, [newFlower, reduce, bloom]);
+
+  const dropDays = fallenDays.slice(0, m.flowerNode.length);
+  const dropped = dropDays.length;
+  const fall = useSharedValue(reduce ? FALL_END : 0);
+  useEffect(() => {
+    if (dropped > 0 && !reduce) {
+      fall.value = 0;
+      fall.value = withDelay(700, withTiming(FALL_END, { duration: 6500 + dropped * 300, easing: Easing.linear }));
+    }
+  }, [dropped, reduce, fall]);
+  const fallOpacity = useDerivedValue(() => Math.min(1, Math.max(0, (FALL_END - fall.value) / 0.3)));
 
   const time = useDerivedValue(() => (reduce ? 0 : clock.value / 1000));
   const pose = useDerivedValue(() => poseTree(m, time.value, ox, oy, s));
@@ -173,9 +239,12 @@ export default function TreeCanvas({ flowers, size = 300, newFlower = false, var
     }
   });
 
-  const petals = useFlowerPath(pose, time, bloom, m, shown, s, 'petal');
+  const petals = useDayPetals(pose, time, bloom, m, days, s);
   const centers = useFlowerPath(pose, time, bloom, m, shown, s, 'center');
   const glows = useFlowerPath(pose, time, bloom, m, shown, s, 'glow');
+  const fallSpec = { clock: fall, groundY: oy };
+  const fallPetals = useDayPetals(pose, time, bloom, m, dropDays, s, fallSpec);
+  const fallCenters = useFlowerPath(pose, time, bloom, m, dropped, s, 'center', fallSpec);
 
   // Floating pollen drifting up through the crown.
   const pollen = usePathValue((b) => {
@@ -186,7 +255,7 @@ export default function TreeCanvas({ flowers, size = 300, newFlower = false, var
       const y = (P.y[k] + t * P.speed[k]) % 1.25;
       const x = P.x[k] + 0.05 * Math.sin(t * 0.35 + P.phase[k]);
       const twinkle = 0.6 + 0.4 * Math.sin(t * 1.3 + P.phase[k]);
-      b.addCircle(ox + x * s, oy - (y - 0.05) * s, P.r[k] * s * twinkle);
+      b.addCircle(ox + x * s, oy - (y - 0.05) * s, P.r[k] * s * twinkle * (night ? 1.7 : 1));
     }
   });
 
@@ -211,20 +280,24 @@ export default function TreeCanvas({ flowers, size = 300, newFlower = false, var
     <Canvas style={{ width: W, height: H }} accessible={false}>
       {/* Soft dreamy light behind the crown */}
       <Circle c={crownC} r={s * 0.62}>
-        <RadialGradient c={crownC} r={s * 0.62} colors={['#EAF3E6', 'rgba(246,244,239,0)']} />
+        <RadialGradient
+          c={crownC}
+          r={s * 0.62}
+          colors={night ? ['rgba(150, 200, 140, 0.18)', 'rgba(20, 30, 40, 0)'] : ['#EAF3E6', 'rgba(246,244,239,0)']}
+        />
       </Circle>
 
       {/* Watercolour-like canopy masses for a soft, dreamy crown */}
       {m.blobNode.length > 0 && (
-        <Path path={blobs} color={m.blobColor}>
+        <Path path={blobs} color={variant === 'cloud' ? ink.canopy : m.blobColor}>
           <BlurMask blur={s * m.blobBlur} style="normal" />
         </Path>
       )}
 
-      <Path path={ground} style="stroke" strokeWidth={Math.max(2.5, s * 0.012)} strokeCap="round" color={colors.primary} />
+      <Path path={ground} style="stroke" strokeWidth={Math.max(2.5, s * 0.012)} strokeCap="round" color={ink.line} />
 
       {branches.map((path, d) => (
-        <Path key={d} path={path} style="stroke" strokeWidth={width(d)} strokeCap="round" strokeJoin="round" color={colors.primary} />
+        <Path key={d} path={path} style="stroke" strokeWidth={width(d)} strokeCap="round" strokeJoin="round" color={ink.line} />
       ))}
 
       <Group>
@@ -236,11 +309,23 @@ export default function TreeCanvas({ flowers, size = 300, newFlower = false, var
       <Path path={glows} color={colors.blossomGlow}>
         <BlurMask blur={s * 0.02} style="normal" />
       </Path>
-      <Path path={petals} color={colors.blossom} />
+      {WEEK.map((d) => (
+        <Path key={d} path={petals[d]} color={colors.dayBlossom[d]} />
+      ))}
       <Path path={centers} color={colors.blossomCenter} />
 
-      <Path path={pollen} color="rgba(255, 236, 170, 0.85)">
-        <BlurMask blur={2.5} style="solid" />
+      {dropped > 0 && (
+        <Group opacity={fallOpacity}>
+          {WEEK.map((d) => (
+            <Path key={d} path={fallPetals[d]} color={colors.dayBlossom[d]} />
+          ))}
+          <Path path={fallCenters} color={colors.blossomCenter} />
+        </Group>
+      )}
+
+      {/* Pollen by day, fireflies by night */}
+      <Path path={pollen} color={night ? 'rgba(225, 255, 150, 0.95)' : 'rgba(255, 236, 170, 0.85)'}>
+        <BlurMask blur={night ? 4 : 2.5} style="solid" />
       </Path>
     </Canvas>
   );

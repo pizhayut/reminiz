@@ -76,7 +76,7 @@ Reminiz คือเกมภาพสั้นๆ สำหรับเล่�
 
 • ตาไว: ภาพจะขึ้นแป๊บเดียว แล้วแตะเลือกภาพที่เห็น ใช้ภาพของคุ้นตา เช่น ผลไม้ สัตว์ ของในบ้าน
 • ไม่มีคะแนน ไม่มีจับเวลาตอนเลือก ตอบผิดก็ไม่เป็นไร ภาพที่ไม่ใช่จะค่อยๆ จางหายไป
-• ต้นไม้ไหวตามลมอยู่บนหน้าจอ ทุกสัปดาห์ที่เล่นครบ 3 วันจะมีดอกไม้บานเพิ่ม ไม่มีวันเหี่ยว
+• ต้นไม้ไหวตามลม เช้ามีพระอาทิตย์ขึ้น กลางคืนมีหิ่งห้อย เล่นวันไหนดอกไม้บานวันนั้น สัปดาห์ละไม่เกิน 7 ดอก
 • ตัวหนังสือใหญ่ ปุ่มใหญ่ มีปุ่มอ่านออกเสียง
 • ภาษาไทยและภาษาอังกฤษ
 • ไม่ต้องสมัคร ไม่มีโฆษณา ไม่เก็บข้อมูล ทุกอย่างอยู่ในเครื่องของคุณ
@@ -90,7 +90,7 @@ Reminiz is a short picture game for every day, designed so older adults can play
 
 • Quick Eye: a picture shows for a moment, then tap the one you saw. Familiar pictures: fruit, animals, things at home.
 • No scores and no timer when choosing. Wrong answers are fine: the other pictures gently fade away.
-• Your tree sways in the breeze. Each week you play 3 days, a new flower blooms. Flowers never wilt.
+• Your tree sways in the breeze, with a sunrise in the morning and fireflies at night. Each day you play, a flower blooms, up to 7 a week.
 • Large text, large buttons and a read-aloud button.
 • Thai and English.
 • No sign-up, no ads, no data collected. Everything stays on your phone.
@@ -126,7 +126,7 @@ No account or sign-in is needed. On first launch, choose what the app should cal
 
 Game: a picture appears briefly in the middle of the screen, then the player taps the picture they saw (10 pictures per round, about 3 minutes). There are no scores, and choosing is never timed. A wrong choice simply fades out.
 
-The animated tree on the home screen gains a flower for each week with 3 days of play.
+Each day a round is completed, a flower blooms on the animated tree (up to 7 per week; the week restarts on Monday). The home screen follows the device clock: morning, daytime and night skies.
 
 The app collects no data, has no ads, no in-app purchases and needs no permissions. Everything is stored locally on the device. It works fully offline. It is a game for enjoyment and makes no medical claims.
 
@@ -163,7 +163,7 @@ Google ต้องให้อัปโหลด .aab ครั้งแรก�
 
 ### D4. Store listing (Grow → Store presence → Main store listing)
 - App name: Reminiz
-- Short description (≤80): TH `เกมภาพง่ายๆ วันละ 3 นาที กับต้นไม้ที่ออกดอกไปพร้อมกับคุณ` · EN `A simple 3-minute picture game a day, and a tree that blooms with you.`
+- Short description (≤80): TH `เกมภาพง่ายๆ วันละ 3 นาที กับดอกไม้บนต้นไม้ทุกวันที่คุณเล่น` · EN `A simple 3-minute picture game a day, and a flower on your tree for every day you play.`
 - Full description: ใช้ข้อความเดียวกับ App Store (C2)
 - App icon 512×512: ย่อจาก `design/brand/app-icon.png`
 - Feature graphic 1024×500: พื้น `#F6F4EF` + ต้นไม้ + wordmark สีเขียว
