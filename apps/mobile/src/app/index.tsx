@@ -66,7 +66,7 @@ export default function Home() {
               color={ink.button}
               pressedColor={ink.buttonPressed}
             />
-            <TextLink label={t('home.about')} onPress={() => router.push('/about')} style={{ color: ink.accentText }} />
+            <TextLink label={t('home.about')} onPress={() => router.push('/about')} style={{ color: ink.footerLink }} />
           </>
         }
       >

@@ -1,6 +1,7 @@
 // Full-screen backdrop for the home screen, following the time of day:
 // morning = warm sunrise with soft blue clouds; day = clear blue sky, high sun with slow rays,
-// white clouds and line-art birds; night = dark sky with stars and fireflies.
+// white clouds and line-art birds; night = dark sky with stars and fireflies, fading to the
+// same paper colour at the bottom as the other scenes (it is not a dark mode).
 import { BlurMask, Canvas, Circle, LinearGradient, Path, RadialGradient, Rect, useClock, usePathValue, vec } from '@shopify/react-native-skia';
 import { useEffect, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
@@ -55,13 +56,13 @@ export default function SkyCanvas({ scene, width: w, height: h }: SkyProps) {
 
   const stars = useMemo(() => {
     const r = rng(7);
-    return Array.from({ length: 34 }, () => ({ x: r() * w, y: r() * h * 0.55, r: 0.6 + r() * 1.1, p: r() * 6.28 }));
+    return Array.from({ length: 30 }, () => ({ x: r() * w, y: r() * h * 0.42, r: 0.6 + r() * 1.1, p: r() * 6.28 }));
   }, [w, h]);
   const flies = useMemo(() => {
     const r = rng(19);
     return Array.from({ length: 22 }, () => ({
       x: 0.05 + r() * 0.9,
-      y: 0.12 + r() * 0.8,
+      y: 0.1 + r() * 0.5, // stay in the dark part of the sky
       r: 2 + r() * 2.2,
       a: 0.15 + r() * 0.25,
       b: 0.1 + r() * 0.2,
@@ -180,7 +181,12 @@ export default function SkyCanvas({ scene, width: w, height: h }: SkyProps) {
       {scene === 'night' && (
         <>
           <Rect x={0} y={0} width={w} height={h}>
-            <LinearGradient start={vec(0, 0)} end={vec(0, h)} colors={['#101827', '#1A283B', '#243749']} />
+            <LinearGradient
+              start={vec(0, 0)}
+              end={vec(0, h * 0.8)}
+              positions={[0, 0.35, 0.68, 1]}
+              colors={['#121B2B', '#263852', '#8D9AB2', colors.bg]}
+            />
           </Rect>
           <Path path={starPath} color="rgba(255, 255, 240, 0.7)" />
           <Path path={fireflies} color="rgba(205, 255, 120, 0.5)">

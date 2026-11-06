@@ -12,9 +12,12 @@ export function sceneFor(d: Date = new Date()): Scene {
 }
 
 export type SceneInk = {
+  /** Greeting and status at the top of the screen, over the sky. */
   text: string;
   textMuted: string;
   accentText: string;
+  /** Link under the Play button, over the paper-coloured bottom. */
+  footerLink: string;
   button: string;
   buttonPressed: string;
   /** Tree line colour (branches and ground). */
@@ -27,6 +30,7 @@ const light: SceneInk = {
   text: colors.text,
   textMuted: colors.textMuted,
   accentText: colors.primary,
+  footerLink: colors.primary,
   button: colors.primary,
   buttonPressed: colors.primaryPressed,
   line: colors.primary,
@@ -41,9 +45,11 @@ export const sceneInk: Record<Scene, SceneInk> = {
     text: '#F3F1EA',
     textMuted: '#C8D0C9',
     accentText: '#B5DFA8',
-    button: '#3D8A47',
-    buttonPressed: '#2E6C34',
-    line: '#8CC98F',
+    // The night sky fades to paper at the bottom, so the button and link keep their day colours.
+    footerLink: colors.primary,
+    button: colors.primary,
+    buttonPressed: colors.primaryPressed,
+    line: '#5FA866',
     canopy: 'rgba(78, 132, 88, 0.6)',
     statusBar: 'light',
   },
