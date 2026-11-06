@@ -1,5 +1,6 @@
 // Full-screen backdrop for the home screen, following the time of day:
-// morning = warm sunrise with soft blue clouds, day = plain paper, night = dark sky with fireflies.
+// morning = warm sunrise with soft blue clouds; day = clear blue sky, high sun with slow rays,
+// white clouds and line-art birds; night = dark sky with stars and fireflies.
 import { BlurMask, Canvas, Circle, LinearGradient, Path, RadialGradient, Rect, useClock, usePathValue, vec } from '@shopify/react-native-skia';
 import { useEffect, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
@@ -27,6 +28,13 @@ const CLOUD_PUFFS: [number, number, number][] = [
   [2.45, 0, 0.9],
   [3.1, 0.3, 0.65],
   [1.5, 0.45, 0.85],
+];
+// Line-art birds gliding across the daytime sky, drawn like the logo's strokes.
+const BIRDS = [
+  // Kept between the greeting and the tree so they never cross the text.
+  { x: 0.1, y: 0.295, size: 9, speed: 11, p: 0 },
+  { x: 0.17, y: 0.315, size: 7, speed: 11, p: 1.4 },
+  { x: 0.62, y: 0.335, size: 8, speed: 8, p: 2.6 },
 ];
 const CLOUDS = [
   { x: 0.02, y: 0.1, r: 22, speed: 5 },
@@ -68,13 +76,47 @@ export default function SkyCanvas({ scene, width: w, height: h }: SkyProps) {
 
   const clouds = usePathValue((b) => {
     'worklet';
-    if (scene !== 'morning') return;
+    if (scene === 'night') return;
     const t = time.value;
+    const big = scene === 'day' ? 1.35 : 1; // fuller fair-weather clouds at midday
     for (let c = 0; c < CLOUDS.length; c++) {
       const cl = CLOUDS[c];
+      const r = cl.r * big;
       const span = w * 1.6;
       const x0 = ((cl.x * w + t * cl.speed) % span) - w * 0.3;
-      for (const [dx, dy, k] of CLOUD_PUFFS) b.addCircle(x0 + dx * cl.r, cl.y * h + dy * cl.r, cl.r * k);
+      for (const [dx, dy, k] of CLOUD_PUFFS) b.addCircle(x0 + dx * r, cl.y * h + dy * r, r * k);
+    }
+  });
+
+  // Midday sun sits high in the corner; its rays turn very slowly and breathe.
+  const daySunC = vec(w * 0.86, h * 0.03);
+  const rays = usePathValue((b) => {
+    'worklet';
+    if (scene !== 'day') return;
+    const t = time.value;
+    const n = 14;
+    for (let k = 0; k < n; k++) {
+      const a = (k / n) * Math.PI * 2 + t * 0.04;
+      const inner = 52;
+      const outer = inner + 34 + 14 * Math.sin(t * 0.8 + k * 1.7);
+      b.moveTo(daySunC.x + Math.cos(a) * inner, daySunC.y + Math.sin(a) * inner);
+      b.lineTo(daySunC.x + Math.cos(a) * outer, daySunC.y + Math.sin(a) * outer);
+    }
+  });
+
+  const birds = usePathValue((b) => {
+    'worklet';
+    if (scene !== 'day') return;
+    const t = time.value;
+    for (const bd of BIRDS) {
+      const span = w * 1.5;
+      const x = ((bd.x * w + t * bd.speed) % span) - w * 0.25;
+      const y = bd.y * h + Math.sin(t * 0.5 + bd.p) * 4;
+      const flap = 0.25 + 0.75 * (0.5 + 0.5 * Math.sin(t * 3.2 + bd.p));
+      const sz = bd.size;
+      b.moveTo(x - sz, y);
+      b.quadTo(x - sz * 0.5, y - sz * flap, x, y);
+      b.quadTo(x + sz * 0.5, y - sz * flap, x + sz, y);
     }
   });
 
@@ -114,7 +156,27 @@ export default function SkyCanvas({ scene, width: w, height: h }: SkyProps) {
           </Path>
         </>
       )}
-      {scene === 'day' && <Rect x={0} y={0} width={w} height={h} color={colors.bg} />}
+      {scene === 'day' && (
+        <>
+          <Rect x={0} y={0} width={w} height={h}>
+            <LinearGradient start={vec(0, 0)} end={vec(0, h * 0.72)} colors={['#BFE0F5', '#E2F0F3', colors.bg]} />
+          </Rect>
+          <Circle c={daySunC} r={150}>
+            <RadialGradient c={daySunC} r={150} colors={['rgba(255, 250, 220, 0.95)', 'rgba(255, 246, 205, 0)']} />
+          </Circle>
+          <Path path={rays} style="stroke" strokeWidth={3} strokeCap="round" color="rgba(255, 226, 140, 0.7)" />
+          <Circle c={daySunC} r={40} color="#FFE07A" />
+          <Circle c={daySunC} r={31} color="#FFF1B0" />
+          {/* Cloud shadow, then the white cloud on top */}
+          <Path path={clouds} color="rgba(160, 196, 225, 0.55)" transform={[{ translateY: 5 }]}>
+            <BlurMask blur={5} style="normal" />
+          </Path>
+          <Path path={clouds} color="rgba(255, 255, 255, 0.95)">
+            <BlurMask blur={2.5} style="normal" />
+          </Path>
+          <Path path={birds} style="stroke" strokeWidth={2} strokeCap="round" strokeJoin="round" color="#3F5D4B" />
+        </>
+      )}
       {scene === 'night' && (
         <>
           <Rect x={0} y={0} width={w} height={h}>
