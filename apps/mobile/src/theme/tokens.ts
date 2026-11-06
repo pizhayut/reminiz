@@ -1,10 +1,15 @@
-// Colors and sizes from design/source/*.dc.html. Older adult screens use large type and tap targets.
+// Brand green comes from the logo (design/brand/logo.png); the rest from design/source/*.dc.html. Older adult screens use large type and tap targets.
 export const colors = {
   bg: '#F6F4EF',
   surface: '#FFFFFF',
-  primary: '#1D6B63',
-  primaryPressed: '#134C46',
-  primarySoft: '#E3EFEC',
+  primary: '#2E6C34',
+  primaryPressed: '#1F4D24',
+  primarySoft: '#E5EFE2',
+  leafFill: '#DCEBD6',
+  canopy: 'rgba(190, 220, 178, 0.5)',
+  blossom: '#F5B09F',
+  blossomCenter: '#F8DA8C',
+  blossomGlow: 'rgba(252, 214, 196, 0.32)',
   accent: '#E07A3F',
   warmSoft: '#FBEBDD',
   warmBorder: '#E8C3A0',

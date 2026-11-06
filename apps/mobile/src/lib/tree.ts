@@ -1,10 +1,6 @@
-// Tree growth is computed from the list of days played; nothing about it is stored separately.
-// It only grows: no wilting, no resets, no streaks that can be broken.
+// The tree is always full grown. Playing earns flowers: one for each week with 3 days of play.
+// Computed from the list of days played; flowers never wilt or reset.
 
-export type TreeStage = 0 | 1 | 2 | 3 | 4;
-
-/** Care-day thresholds for each stage: seed, sprout, small tree, young tree, big tree. */
-export const STAGE_DAYS = [0, 1, 3, 7, 14] as const;
 export const DAYS_PER_FLOWER_WEEK = 3;
 
 /** Local calendar date as YYYY-MM-DD. */
@@ -30,7 +26,6 @@ export function weekKey(day: string): string {
 
 export type TreeState = {
   careDays: number;
-  stage: TreeStage;
   flowers: number;
   /** Days played in the current week, capped at DAYS_PER_FLOWER_WEEK. */
   daysThisWeek: number;
@@ -47,15 +42,8 @@ export function treeState(playDays: readonly string[], today: string = localDay(
   let flowers = 0;
   for (const n of perWeek.values()) if (n >= DAYS_PER_FLOWER_WEEK) flowers++;
 
-  const careDays = unique.length;
-  let stage: TreeStage = 0;
-  STAGE_DAYS.forEach((min, i) => {
-    if (careDays >= min) stage = i as TreeStage;
-  });
-
   return {
-    careDays,
-    stage,
+    careDays: unique.length,
     flowers,
     daysThisWeek: Math.min(perWeek.get(weekKey(today)) ?? 0, DAYS_PER_FLOWER_WEEK),
     playedToday: unique.includes(today),

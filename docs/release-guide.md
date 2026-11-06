@@ -63,7 +63,7 @@ appstoreconnect.apple.com → Apps → **+ New App**
 |---|---|---|
 | Name | Reminiz | Reminiz |
 | Subtitle (≤30) | เกมภาพง่ายๆ ปลูกต้นไม้ทุกวัน | A simple picture game a day |
-| Promotional text | เล่นวันละ 3 นาที แล้วดูต้นไม้ของคุณโต | Play for 3 minutes a day and watch your tree grow. |
+| Promotional text | เล่นวันละ 3 นาที แล้วดูต้นไม้ของคุณออกดอก | Play for 3 minutes a day and watch your tree bloom. |
 | Keywords (≤100) | เกม,ผู้สูงอายุ,ภาพ,ต้นไม้,ง่าย,ตาไว,ครอบครัว,พ่อแม่,ปู่ย่า,ตายาย | game,seniors,elderly,pictures,tree,simple,easy,family,grandparents,relaxing |
 | Support URL | https://reminiz.renzoft.com/support | same |
 | Marketing URL | https://reminiz.renzoft.com | same |
@@ -76,7 +76,7 @@ Reminiz คือเกมภาพสั้นๆ สำหรับเล่�
 
 • ตาไว: ภาพจะขึ้นแป๊บเดียว แล้วแตะเลือกภาพที่เห็น ใช้ภาพของคุ้นตา เช่น ผลไม้ สัตว์ ของในบ้าน
 • ไม่มีคะแนน ไม่มีจับเวลาตอนเลือก ตอบผิดก็ไม่เป็นไร ภาพที่ไม่ใช่จะค่อยๆ จางหายไป
-• ต้นไม้ของคุณโตขึ้นทุกวันที่เล่น และออกดอกเมื่อเล่นครบ 3 วันในสัปดาห์ ไม่มีวันเหี่ยว
+• ต้นไม้ไหวตามลมอยู่บนหน้าจอ ทุกสัปดาห์ที่เล่นครบ 3 วันจะมีดอกไม้บานเพิ่ม ไม่มีวันเหี่ยว
 • ตัวหนังสือใหญ่ ปุ่มใหญ่ มีปุ่มอ่านออกเสียง
 • ภาษาไทยและภาษาอังกฤษ
 • ไม่ต้องสมัคร ไม่มีโฆษณา ไม่เก็บข้อมูล ทุกอย่างอยู่ในเครื่องของคุณ
@@ -90,7 +90,7 @@ Reminiz is a short picture game for every day, designed so older adults can play
 
 • Quick Eye: a picture shows for a moment, then tap the one you saw. Familiar pictures: fruit, animals, things at home.
 • No scores and no timer when choosing. Wrong answers are fine: the other pictures gently fade away.
-• Your tree grows every day you play and blooms when you play 3 days in a week. It never wilts.
+• Your tree sways in the breeze. Each week you play 3 days, a new flower blooms. Flowers never wilt.
 • Large text, large buttons and a read-aloud button.
 • Thai and English.
 • No sign-up, no ads, no data collected. Everything stays on your phone.
@@ -113,7 +113,7 @@ npx eas-cli@latest submit -p ios --latest
 - **Pricing and Availability:** Free · ทุกประเทศ (หรือเริ่มที่ Thailand)
 - **Encryption:** ตั้ง `ITSAppUsesNonExemptEncryption = false` ไว้ใน `app.json` แล้ว จะไม่ถามอีก
 - **iPad:** `supportsTablet: false` จึงไม่ต้องส่ง screenshot iPad
-- **Screenshots:** iPhone 6.9" (1320×2868 หรือ 1290×2796) อย่างน้อย 3 ภาพ — แนะนำ 4 ภาพ: หน้าหลักมีต้นไม้, ภาพโผล่กลางจอ, เลือกภาพ, หน้าจบรอบต้นไม้ออกดอก (จับจาก simulator iPhone 17 Pro Max: `xcrun simctl io booted screenshot shot.png`)
+- **Screenshots:** iPhone 6.9" (1320×2868 หรือ 1290×2796) อย่างน้อย 3 ภาพ — แนะนำ 4 ภาพ: หน้าหลักมีต้นไม้ออกดอก, ภาพโผล่กลางจอ, เลือกภาพ, หน้าจบรอบ (จับจาก simulator iPhone 17 Pro Max: `xcrun simctl io booted screenshot shot.png`)
 
 ### C5. App Review Information
 - **Sign-in required:** ไม่ติ๊ก (ไม่มีบัญชี)
@@ -126,7 +126,7 @@ No account or sign-in is needed. On first launch, choose what the app should cal
 
 Game: a picture appears briefly in the middle of the screen, then the player taps the picture they saw (10 pictures per round, about 3 minutes). There are no scores, and choosing is never timed. A wrong choice simply fades out.
 
-Each day a round is completed, the tree on the home screen grows; playing 3 days in one week adds a flower. To see later tree stages you would need several days of play.
+The animated tree on the home screen gains a flower for each week with 3 days of play.
 
 The app collects no data, has no ads, no in-app purchases and needs no permissions. Everything is stored locally on the device. It works fully offline. It is a game for enjoyment and makes no medical claims.
 
@@ -163,7 +163,7 @@ Google ต้องให้อัปโหลด .aab ครั้งแรก�
 
 ### D4. Store listing (Grow → Store presence → Main store listing)
 - App name: Reminiz
-- Short description (≤80): TH `เกมภาพง่ายๆ วันละ 3 นาที กับต้นไม้ที่โตไปพร้อมกับคุณ` · EN `A simple 3-minute picture game a day, and a tree that grows with you.`
+- Short description (≤80): TH `เกมภาพง่ายๆ วันละ 3 นาที กับต้นไม้ที่ออกดอกไปพร้อมกับคุณ` · EN `A simple 3-minute picture game a day, and a tree that blooms with you.`
 - Full description: ใช้ข้อความเดียวกับ App Store (C2)
 - App icon 512×512: ย่อจาก `design/brand/app-icon.png`
 - Feature graphic 1024×500: พื้น `#F6F4EF` + ต้นไม้ + wordmark สีเขียว

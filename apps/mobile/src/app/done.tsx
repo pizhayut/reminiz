@@ -31,7 +31,7 @@ export default function Done() {
       <AppText variant="display" bold center accessibilityRole="header" style={{ marginTop: 24 }}>
         {t('done.title')}
       </AppText>
-      <Tree stage={tree.stage} flowers={tree.flowers} grow={isFirst} size={300} />
+      <Tree flowers={tree.flowers} newFlower={newFlower} size={300} />
       <Card warm={newFlower}>
         <AppText variant="body" bold center>
           {message}

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { Tree } from '@/components/Tree';
+import { Image } from 'expo-image';
 import { AppText, BigButton, Screen, SpeakButton } from '@/components/ui';
 import { CALL_NAME_OPTIONS } from '@/lib/names';
 import { useStore } from '@/state/store';
@@ -34,7 +34,9 @@ export default function Welcome() {
         <View style={{ flex: 1 }} />
         <SpeakButton text={t('welcome.speak')} />
       </View>
-      {!edit && <Tree stage={2} flowers={3} size={120} />}
+      {!edit && (
+        <Image source={require('@/assets/images/splash.png')} style={styles.logo} contentFit="contain" accessible={false} />
+      )}
       <AppText variant="title" bold center accessibilityRole="header">
         {t('welcome.title')}
       </AppText>
@@ -70,6 +72,7 @@ export default function Welcome() {
 
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', marginBottom: -space.lg },
+  logo: { width: 190, height: 141, alignSelf: 'center' },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
   chip: {
     minHeight: tapTarget.secondary,

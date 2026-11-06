@@ -1,21 +1,21 @@
 import { Redirect, router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { StyleSheet, View, useWindowDimensions } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Tree } from '@/components/Tree';
-import { AppText, BigButton, Card, Screen, SpeakButton, TextLink } from '@/components/ui';
+import { AppText, BigButton, Screen, SpeakButton, TextLink } from '@/components/ui';
 import { displayName, greetingKey } from '@/lib/names';
 import { DAYS_PER_FLOWER_WEEK, localDay, treeState } from '@/lib/tree';
 import { useStore } from '@/state/store';
-import { space } from '@/theme/tokens';
+import { colors, space } from '@/theme/tokens';
 
 export default function Home() {
   const { t } = useTranslation();
   const { callName, playDays } = useStore();
-  const { height } = useWindowDimensions();
-  // Leave room for the greeting, status card, caption and the Play button on small phones.
-  const treeSize = Math.max(170, Math.min(300, height - 590));
+  // The tree fills whatever space is left between the status card and the Play button.
+  const [area, setArea] = useState({ w: 0, h: 0 });
+  const treeSize = Math.floor(Math.min(area.w, area.h - 96, 400));
   // Re-read the clock whenever the screen comes back into view (the app may stay open overnight).
   const [now, setNow] = useState(() => new Date());
   useFocusEffect(useCallback(() => setNow(new Date()), []));
@@ -41,6 +41,7 @@ export default function Home() {
 
   return (
     <Screen
+      scroll={false}
       footer={
         <>
           <BigButton label={tree.playedToday ? t('home.playAgain') : t('home.playToday')} onPress={() => router.push('/play')} />
@@ -49,34 +50,36 @@ export default function Home() {
       }
     >
       <View style={styles.header}>
-        <AppText variant="display" bold style={{ flex: 1 }} accessibilityRole="header">
-          {title}
-        </AppText>
+        <View style={{ flex: 1, gap: space.xs }}>
+          <AppText variant="display" bold accessibilityRole="header">
+            {title}
+          </AppText>
+          <AppText variant="body" muted>
+            {status}
+          </AppText>
+        </View>
         <SpeakButton text={spoken} />
       </View>
 
-      <Card>
-        <AppText variant="body" bold>
-          {status}
-        </AppText>
-        {weekHint ? (
-          <AppText variant="small" muted>
-            {weekHint}
-          </AppText>
-        ) : null}
-      </Card>
-
-      <View style={styles.treeWrap}>
-        <Tree stage={tree.stage} flowers={tree.flowers} size={treeSize} />
+      <View
+        style={styles.treeWrap}
+        onLayout={(e) => setArea({ w: e.nativeEvent.layout.width, h: e.nativeEvent.layout.height })}
+      >
+        {treeSize > 120 ? <Tree flowers={tree.flowers} size={treeSize} /> : null}
         <AppText variant="small" muted center>
           {caption}
         </AppText>
+        {weekHint ? (
+          <AppText variant="small" bold center style={{ color: colors.primary }}>
+            {weekHint}
+          </AppText>
+        ) : null}
       </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  header: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.sm },
-  treeWrap: { gap: space.sm, marginTop: space.sm },
+  header: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: space.sm },
+  treeWrap: { flex: 1, gap: space.sm, justifyContent: 'center', alignItems: 'center' },
 });
