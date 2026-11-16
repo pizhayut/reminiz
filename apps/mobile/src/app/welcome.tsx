@@ -35,7 +35,7 @@ export default function Welcome() {
         <SpeakButton text={t('welcome.speak')} />
       </View>
       {!edit && (
-        <Image source={require('@/assets/images/splash.png')} style={styles.logo} contentFit="contain" accessible={false} />
+        <Image source={require('@/assets/images/logo.png')} style={styles.logo} contentFit="contain" accessible={false} />
       )}
       <AppText variant="title" bold center accessibilityRole="header">
         {t('welcome.title')}
