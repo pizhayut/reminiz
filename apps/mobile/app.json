@@ -25,9 +25,10 @@
       "package": "com.renzoft.reminiz",
       "versionCode": 1,
       "adaptiveIcon": {
-        "backgroundColor": "#F6F4EF",
+        "backgroundColor": "#FCEFD9",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "monochromeImage": "./assets/images/android-icon-monochrome.png",
+        "backgroundImage": "./assets/images/android-icon-background.png"
       },
       "permissions": [],
       "blockedPermissions": [

@@ -20,9 +20,10 @@ export type SceneInk = {
   footerLink: string;
   button: string;
   buttonPressed: string;
-  /** Tree line colour (branches and ground). */
+  /** Ground line and grass. */
   line: string;
-  canopy: string;
+  /** Round tree: crown shadow, middle and highlight greens, and the trunk. */
+  tree: { back: string; mid: string; front: string; trunk: string };
   statusBar: 'dark' | 'light';
 };
 
@@ -34,7 +35,7 @@ const light: SceneInk = {
   button: colors.primary,
   buttonPressed: colors.primaryPressed,
   line: colors.primary,
-  canopy: 'rgba(188, 222, 176, 0.8)',
+  tree: { back: '#4F9156', mid: '#76B470', front: '#A8D696', trunk: '#6B4E37' },
   statusBar: 'dark',
 };
 
@@ -50,7 +51,7 @@ export const sceneInk: Record<Scene, SceneInk> = {
     button: colors.primary,
     buttonPressed: colors.primaryPressed,
     line: '#5FA866',
-    canopy: 'rgba(78, 132, 88, 0.6)',
+    tree: { back: '#2C5536', mid: '#3F7449', front: '#558D5E', trunk: '#6E8F70' },
     statusBar: 'light',
   },
 };

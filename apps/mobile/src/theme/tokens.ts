@@ -5,7 +5,6 @@ export const colors = {
   primary: '#2E6C34',
   primaryPressed: '#1F4D24',
   primarySoft: '#E5EFE2',
-  leafFill: '#DCEBD6',
   blossom: '#F5B09F',
   /**
    * Flower colour for the weekday it was earned (Thai day colours, Sunday first).
@@ -13,7 +12,6 @@ export const colors = {
    */
   dayBlossom: ['#E8574F', '#F5C93E', '#F59BC3', '#62C46A', '#F58A34', '#62A6EC', '#9C7AD6'],
   blossomCenter: '#FFF3C9',
-  blossomGlow: 'rgba(252, 214, 196, 0.32)',
   accent: '#E07A3F',
   warmSoft: '#FBEBDD',
   warmBorder: '#E8C3A0',
