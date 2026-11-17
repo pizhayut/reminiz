@@ -66,6 +66,7 @@ export default function Home() {
               color={ink.button}
               pressedColor={ink.buttonPressed}
             />
+            <BigButton kind="secondary" label={t('home.checkIn')} onPress={() => router.push('/checkin')} />
             <TextLink label={t('home.about')} onPress={() => router.push('/about')} style={{ color: ink.footerLink }} />
           </>
         }

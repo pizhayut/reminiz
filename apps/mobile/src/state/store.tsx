@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 
 import i18n, { deviceLanguage, type Language } from '@/i18n';
+import type { CheckIn } from '@/checkin/scoring';
 import { clampLevel } from '@/lib/staircase';
 import { localDay } from '@/lib/tree';
 
@@ -16,9 +17,11 @@ type Saved = {
   language: Language | null; // null = follow the device
   playDays: string[];
   level: number;
+  /** Monthly check-ins, oldest first. */
+  checkIns: CheckIn[];
 };
 
-const initial: Saved = { callName: null, language: null, playDays: [], level: 0 };
+const initial: Saved = { callName: null, language: null, playDays: [], level: 0, checkIns: [] };
 
 type Store = Saved & {
   loaded: boolean;
@@ -27,6 +30,7 @@ type Store = Saved & {
   setLanguage: (lang: Language) => void;
   /** Record a finished round; returns true when this was the first round today. */
   finishRound: (level: number) => boolean;
+  addCheckIn: (checkIn: CheckIn) => void;
 };
 
 const Ctx = createContext<Store | null>(null);
@@ -45,6 +49,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           language: parsed.language ?? null,
           playDays: Array.isArray(parsed.playDays) ? parsed.playDays : [],
           level: clampLevel(parsed.level ?? 0),
+          checkIns: Array.isArray(parsed.checkIns) ? parsed.checkIns : [],
         });
       })
       .catch(() => {})
@@ -82,6 +87,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         }));
         return first;
       },
+      addCheckIn: (checkIn) => update((s) => ({ ...s, checkIns: [...s.checkIns, checkIn] })),
     }),
     [saved, loaded, language, update],
   );
