@@ -158,6 +158,7 @@ export default function Report() {
         <AppText variant="small" muted>
           {t('family.notValidated')}
         </AppText>
+        <BigButton kind="secondary" label={t('report.family.answer')} onPress={() => router.push('/family')} />
       </Section>
 
       <Section title={t('report.next.title')}>

@@ -38,6 +38,7 @@ function Root() {
         <Stack.Screen name="done" options={{ gestureEnabled: false }} />
         <Stack.Screen name="checkin" options={{ gestureEnabled: false }} />
         <Stack.Screen name="report" />
+        <Stack.Screen name="family" />
         <Stack.Screen name="about" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
       </Stack>
     </>
