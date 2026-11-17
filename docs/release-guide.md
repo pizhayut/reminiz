@@ -18,6 +18,7 @@
 ## สิ่งที่ยังต้องทำ (checklist รวม)
 
 **ฝั่งคุณ (ต้องใช้บัญชี / ตัดสินใจเอง)**
+- [ ] H2. เดโมเว็บกรรมการ (ตอนนี้เปิดได้ที่ https://reminiz-demo.vercel.app/?demo=1): ต่อโดเมน `demo.reminiz.renzoft.com` เข้าโปรเจกต์ Vercel `reminiz-demo` (DNS) แล้วไล่ checklist H3 ก่อนส่ง 19 พ.ย.
 - [ ] A. Deploy `site/` บน Vercel + ต่อโดเมน `reminiz.renzoft.com`
 - [ ] D1. สร้างแอปใน App Store Connect และจองชื่อ "Reminiz" (ถ้าชื่อถูกใช้แล้ว ต้องเลือกชื่อใหม่ เช่น "Reminiz – เกมภาพ")
 - [ ] B. `eas login` + `eas init` แล้ว commit `app.json` ที่มี projectId
@@ -272,3 +273,59 @@ MVP0 ยังไม่ได้ใส่ `expo-updates` (OTA) เพื่อ�
   ```bash
   cd apps/mobile && npx expo run:android
   ```
+
+---
+
+## H. เดโมเว็บสำหรับกรรมการ (MVP-Hackathon, Future Health Challenge ส่ง 19 พ.ย.)
+
+แอปเดียวกับบนมือถือ แต่ export เป็นเว็บ static (ยังคง local-only: ไม่มี backend ไม่มี login ข้อมูลอยู่ใน localStorage ของเบราว์เซอร์) แยกโปรเจกต์ Vercel จาก `site/`
+
+**ลิงก์ที่ส่งให้กรรมการ:** `https://demo.reminiz.renzoft.com/?demo=1` (หลังต่อโดเมนในข้อ H2)
+**ใช้ได้แล้วตอนนี้:** https://reminiz-demo.vercel.app/?demo=1 (โปรเจกต์ Vercel `reminiz-demo` สร้างและ deploy จาก CLI แล้ว)
+เปิดครั้งแรกต้นไม้จะขึ้นช้ากว่าปุ่มราว 2–5 วินาที เพราะต้องโหลด `canvaskit.wasm` (~7 MB) ที่ใช้วาดต้นไม้
+`?demo=1` = ข้ามหน้าต้อนรับ, โหลดข้อมูลตัวอย่าง 6 เดือน, ตั้งภาษาเป็น English (โหลดครั้งเดียวต่อแท็บ กด reload แล้วข้อมูลที่กรรมการทำต่อยังอยู่)
+
+**เส้นทางที่กรรมการกดดูได้ภายในไม่กี่นาที**
+1. หน้าหลัก: ต้นไม้มีดอกไม้ + ป้าย **Demo data** → ปุ่ม **Play today** (เกมตาไว ไม่มีคะแนน) และ **Monthly check-in** (ปุ่มรอง)
+2. **See the family report →** (แถบบนหน้าหลัก): สถานะ "Talk to a doctor", กราฟรายเดือน + เส้น baseline, เช็กอินทุกครั้ง, คำถามบริบท, คำถามครอบครัว, ปุ่ม **Emergency signs** (โทร 1669), ปุ่ม **Print 1-page summary**
+3. **About this app** → Demo for judges: **Clear demo data** / **Load demo data**, เปลี่ยนภาษาไทย/อังกฤษ
+
+### H1. Build ในเครื่อง (ทดสอบก่อน deploy)
+```bash
+cd apps/mobile && npx expo export -p web
+```
+```bash
+npx serve apps/mobile/dist -s
+```
+ได้โฟลเดอร์ `apps/mobile/dist` (มี `canvaskit.wasm` สำหรับวาดต้นไม้ ถูก copy มาจาก `public/` ตอน `npm install`)
+
+### H2. โปรเจกต์ Vercel `reminiz-demo`
+ค่าทั้งหมดอยู่ใน `apps/mobile/vercel.json` แล้ว (install `npm ci`, build `npx expo export -p web`, output `dist`, SPA rewrite, `noindex`)
+โปรเจกต์ถูกสร้างด้วย `npx vercel link` + `npx vercel deploy --prod` จากโฟลเดอร์ `apps/mobile` แล้ว (ไฟล์ link อยู่ใน `apps/mobile/.vercel/` ไม่ commit)
+1. (ทางเลือก ให้ deploy อัตโนมัติทุก push) vercel.com → โปรเจกต์ `reminiz-demo` → **Settings → Git** → Connect `pizhayut/reminiz` แล้วตั้ง **Root Directory** = `apps/mobile`
+2. **Settings → Domains** → Add `demo.reminiz.renzoft.com`
+   - DNS อยู่บน Vercel: ต่อให้อัตโนมัติ
+   - DNS อยู่ที่อื่น: เพิ่ม `CNAME  demo.reminiz  →  cname.vercel-dns.com` (ถ้าโดเมนหลักคือ `renzoft.com`)
+4. (ทางเลือก) Settings → Git → **Ignored Build Step** = `git diff --quiet HEAD^ HEAD -- .` ให้ build ใหม่เฉพาะตอน `apps/mobile` เปลี่ยน
+
+Deploy ใหม่จากเครื่อง (ไม่ต้องผูก Git):
+```bash
+cd apps/mobile && npx vercel deploy --prod
+```
+
+### H3. เช็กก่อนส่งกรรมการ
+- [ ] เปิด `https://demo.reminiz.renzoft.com/?demo=1` ในหน้าต่าง Incognito → เห็นหน้าหลักภาษาอังกฤษ มีดอกไม้ และป้าย Demo data
+- [ ] รายงานขึ้น "Talk to a doctor" กราฟมี 6 จุด, ปุ่ม Print เปิดหน้าพิมพ์ 1 หน้า
+- [ ] ทำ Monthly check-in จนจบ (~5 นาที) ไม่มีคะแนนโผล่ระหว่างทำ จบด้วยหน้าขอบคุณ
+- [ ] เปิดบนมือถือจริง 1 เครื่อง (Safari/Chrome) ต้นไม้ขึ้น ปุ่มกดได้
+- [ ] Reload แล้ว `/report` ยังเปิดได้ (SPA rewrite ทำงาน)
+
+### H4. APK สำหรับ Android (ทางเลือก, build บน EAS cloud ไม่ต้องใช้ CocoaPods)
+profile `preview` ใน `apps/mobile/eas.json` ตั้งเป็น APK + internal distribution แล้ว
+```bash
+cd apps/mobile && npx eas-cli@latest build --platform android --profile preview
+```
+ครั้งแรกต้อง `eas login` + `eas init` (ข้อ B) EAS จะให้ลิงก์ดาวน์โหลด APK ส่งต่อให้กรรมการได้
+
+### H5. หมายเหตุสำหรับ build ขึ้น store
+เช็กอิน รายงาน และโหมดสาธิตอยู่ใน build มือถือด้วย (โค้ดชุดเดียวกัน) ข้อมูลยังเก็บในเครื่องเท่านั้น Privacy Label "Data Not Collected" ยังใช้ได้ แต่ก่อนส่ง store รอบหน้าให้ทบทวนคำอธิบายหน้า store และ Review Notes ให้ตรงกับฟีเจอร์ใหม่ (เลี่ยงคำโฆษณาด้านสุขภาพ ตามข้อ 6)

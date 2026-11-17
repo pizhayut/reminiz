@@ -48,3 +48,6 @@ android/
 
 # Copied from canvaskit-wasm by postinstall (web preview only)
 public/canvaskit.wasm
+
+# Vercel CLI link (web demo)
+.vercel
