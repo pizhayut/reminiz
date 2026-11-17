@@ -1,9 +1,11 @@
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
+import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { DemoBadge } from '@/components/DemoBadge';
 import { AppText, BigButton, Card, Screen, TextLink } from '@/components/ui';
 import { languages, type Language } from '@/i18n';
 import { displayName } from '@/lib/names';
@@ -15,7 +17,8 @@ const LANGUAGE_LABEL: Record<Language, string> = { th: 'ไทย', en: 'English
 
 export default function About() {
   const { t } = useTranslation();
-  const { callName, language, setLanguage } = useStore();
+  const { callName, language, setLanguage, demo, loadDemo, clearData } = useStore();
+  const [confirmErase, setConfirmErase] = useState(false);
   const name = displayName(callName, t);
   const lang = language === 'th' ? 'th' : 'en';
   const open = (path: string) => WebBrowser.openBrowserAsync(`${SITE}/${path}#${lang}`).catch(() => {});
@@ -72,6 +75,46 @@ export default function About() {
             );
           })}
         </View>
+      </Card>
+
+      <Card>
+        <View style={styles.row}>
+          <AppText variant="body" bold style={{ flex: 1 }}>
+            {t('demo.title')}
+          </AppText>
+          <DemoBadge />
+        </View>
+        <AppText variant="small">{t('demo.body')}</AppText>
+        {demo ? (
+          <>
+            <BigButton kind="secondary" label={t('demo.clear')} onPress={clearData} />
+            <AppText variant="small" muted>
+              {t('demo.clearHint')}
+            </AppText>
+          </>
+        ) : (
+          <>
+            <BigButton
+              label={t('demo.load')}
+              onPress={() => {
+                loadDemo();
+                router.dismissTo('/');
+              }}
+            />
+            <BigButton
+              kind="secondary"
+              label={confirmErase ? t('demo.eraseConfirm') : t('demo.erase')}
+              onPress={() => {
+                if (!confirmErase) {
+                  setConfirmErase(true);
+                  return;
+                }
+                clearData();
+                router.dismissTo('/');
+              }}
+            />
+          </>
+        )}
       </Card>
 
       <Card warm>

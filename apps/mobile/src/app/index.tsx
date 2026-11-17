@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { DemoBadge } from '@/components/DemoBadge';
 import { Sky } from '@/components/Sky';
 import { Tree } from '@/components/Tree';
 import { AppText, BigButton, Screen, SpeakButton, TextLink } from '@/components/ui';
@@ -11,13 +12,13 @@ import { displayName, greetingKey } from '@/lib/names';
 import { sceneFor, sceneInk, type Scene } from '@/lib/scene';
 import { localDay, treeState } from '@/lib/tree';
 import { useStore } from '@/state/store';
-import { space } from '@/theme/tokens';
+import { colors, radius, space } from '@/theme/tokens';
 
 const SCENES: Scene[] = ['morning', 'day', 'night'];
 
 export default function Home() {
   const { t } = useTranslation();
-  const { callName, playDays } = useStore();
+  const { callName, playDays, demo } = useStore();
   const window = useWindowDimensions();
   // The tree fills whatever space is left between the greeting and the Play button.
   const [area, setArea] = useState({ w: 0, h: 0 });
@@ -83,6 +84,15 @@ export default function Home() {
           <SpeakButton text={spoken} />
         </View>
 
+        {demo ? (
+          <View style={styles.demoBanner}>
+            <DemoBadge />
+            <AppText variant="small" bold style={{ flex: 1, color: colors.primary }}>
+              {t('demo.banner')}
+            </AppText>
+          </View>
+        ) : null}
+
         <View
           style={styles.treeWrap}
           onLayout={(e) => setArea({ w: e.nativeEvent.layout.width, h: e.nativeEvent.layout.height })}
@@ -98,5 +108,14 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: space.sm },
+  demoBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    minHeight: 48,
+    backgroundColor: 'rgba(255,255,255,0.85)',
+    borderRadius: radius.md,
+    paddingHorizontal: space.sm,
+  },
   treeWrap: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 });

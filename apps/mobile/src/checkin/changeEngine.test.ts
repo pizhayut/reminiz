@@ -5,6 +5,8 @@ import { describe, test } from 'node:test';
 import { reliableChangeIndex, runChangeEngine, sDiff, type RciParams } from './changeEngine.ts';
 import { RCI_CONFIG } from './config.ts';
 import { attentionScore, compositeScore, memoryScore, type CheckIn, type ContextAnswers } from './scoring.ts';
+import { makeDemoData } from './demo.ts';
+import { familySuggestsDoctor, latestFamilyReport } from './family.ts';
 import { attentionForm, formFor, memoryForm, symbolForm } from './forms.ts';
 
 const fine: ContextAnswers = { sleptWell: 'yes', unwell: 'no', stressed: 'no', ready: 'yes' };
@@ -196,3 +198,48 @@ describe('alternate forms', () => {
   });
 });
 
+describe('demo data', () => {
+  test('walks through every status and ends on "see a doctor"', () => {
+    for (const today of [new Date(2026, 10, 17), new Date(2026, 0, 5), new Date(2027, 2, 31)]) {
+      const demo = makeDemoData(today);
+      assert.deepEqual(
+        runChangeEngine(demo.checkIns).results.map((r) => r.status),
+        ['baseline', 'baseline', 'stable', 'stable', 'repeat', 'seeDoctor'],
+      );
+      assert.equal(familySuggestsDoctor(latestFamilyReport(demo.familyReports)), true);
+    }
+  });
+
+  test('check-in dates are a month apart and in order', () => {
+    const dates = makeDemoData(new Date(2026, 2, 31)).checkIns.map((c) => c.date);
+    assert.deepEqual(dates, dates.slice().sort());
+    assert.equal(new Set(dates.map((d) => d.slice(0, 7))).size, 6);
+  });
+
+  test('leaves today unplayed so the judge can earn today\'s flower', () => {
+    const today = new Date(2026, 10, 19); // a Thursday
+    const days = makeDemoData(today).playDays;
+    assert.ok(!days.includes('2026-11-19'));
+    for (const d of ['2026-11-16', '2026-11-17', '2026-11-18']) assert.ok(days.includes(d));
+  });
+});
+
+describe('family questions', () => {
+  const report = (yes: number, unsure = 0) => {
+    const keys = ['repeats', 'misplaces', 'getsLost', 'moneyMedicine', 'moodChange'] as const;
+    const answers = Object.fromEntries(
+      keys.map((k, i) => [k, i < yes ? 'yes' : i < yes + unsure ? 'unsure' : 'no']),
+    ) as Record<(typeof keys)[number], 'yes' | 'no' | 'unsure'>;
+    return { id: 'f', date: '2026-11-01', answers };
+  };
+  test('two or more "yes" suggest a doctor; "not sure" does not count', () => {
+    assert.equal(familySuggestsDoctor(report(1, 4)), false);
+    assert.equal(familySuggestsDoctor(report(2)), true);
+    assert.equal(familySuggestsDoctor(null), false);
+  });
+  test('latest report is by date', () => {
+    const a = { ...report(0), id: 'a', date: '2026-05-01' };
+    const b = { ...report(3), id: 'b', date: '2026-11-01' };
+    assert.equal(latestFamilyReport([b, a])?.id, 'b');
+  });
+});
