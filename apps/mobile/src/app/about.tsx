@@ -78,16 +78,14 @@ export default function About() {
       </Card>
 
       <Card>
-        <View style={styles.row}>
-          <AppText variant="body" bold style={{ flex: 1 }}>
-            {t('demo.title')}
-          </AppText>
-          <DemoBadge />
-        </View>
+        <DemoBadge style={{ alignSelf: 'flex-start' }} />
+        <AppText variant="body" bold>
+          {t('demo.title')}
+        </AppText>
         <AppText variant="small">{t('demo.body')}</AppText>
         {demo ? (
           <>
-            <BigButton label={t('demo.openReport')} onPress={() => router.push('/report')} />
+            <BigButton size="compact" label={t('demo.openReport')} onPress={() => router.push('/report')} />
             <BigButton kind="secondary" label={t('demo.clear')} onPress={clearData} />
             <AppText variant="small" muted>
               {t('demo.clearHint')}
@@ -96,6 +94,7 @@ export default function About() {
         ) : (
           <>
             <BigButton
+              size="compact"
               label={t('demo.load')}
               onPress={() => {
                 loadDemo();
@@ -118,7 +117,8 @@ export default function About() {
         )}
       </Card>
 
-      <TextLink label={t('about.report')} onPress={() => router.push('/report')} />
+      {/* In demo mode the demo card already links to the report. */}
+      {!demo ? <TextLink label={t('about.report')} onPress={() => router.push('/report')} /> : null}
 
       <Card warm>
         <AppText variant="small">{t('about.privacy')}</AppText>

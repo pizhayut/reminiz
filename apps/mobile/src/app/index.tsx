@@ -90,9 +90,15 @@ export default function Home() {
             onPress={() => router.push('/report')}
             style={({ pressed }) => [styles.demoBanner, pressed && { opacity: 0.85 }]}
           >
-            <DemoBadge />
-            <AppText variant="small" bold style={{ flex: 1, color: colors.primary, textDecorationLine: 'underline' }}>
-              {t('demo.openReport')} →
+            {/* Badge and link stacked: side by side they do not fit a small phone in Thai. */}
+            <View style={{ flex: 1, gap: 4 }}>
+              <DemoBadge style={{ alignSelf: 'flex-start' }} />
+              <AppText variant="small" bold style={{ color: colors.primary }}>
+                {t('demo.openReport')}
+              </AppText>
+            </View>
+            <AppText variant="title" bold style={{ color: colors.primary }}>
+              ›
             </AppText>
           </Pressable>
         ) : null}
@@ -116,10 +122,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.sm,
-    minHeight: 48,
-    backgroundColor: 'rgba(255,255,255,0.85)',
+    backgroundColor: colors.surface,
     borderRadius: radius.md,
-    paddingHorizontal: space.sm,
+    paddingVertical: space.sm,
+    paddingHorizontal: space.md,
+    borderWidth: 1.5,
+    borderColor: colors.border,
   },
   treeWrap: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 });

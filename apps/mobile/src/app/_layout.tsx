@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import '@/i18n';
+import '@/lib/preloadSkia';
 import { StoreProvider, useStore } from '@/state/store';
 import { colors } from '@/theme/tokens';
 

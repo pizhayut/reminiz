@@ -2,7 +2,7 @@
 // difficulty and shows no score or right/wrong count while the person takes it (practice
 // rounds give gentle feedback only).
 import * as Haptics from 'expo-haptics';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useEffectEvent, useRef, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -126,7 +126,10 @@ export function QuestionStep({
   yes,
   no,
   note,
+  icon,
 }: {
+  /** A picture that says what the question is about, for people who find reading hard. */
+  icon?: string;
   question: string;
   progress: string;
   onBack: () => void;
@@ -137,6 +140,7 @@ export function QuestionStep({
 }) {
   return (
     <Screen
+      style={{ flexGrow: 1 }}
       footer={
         <>
           <AnswerButton label={yes} onPress={() => onAnswer(true)} />
@@ -145,7 +149,12 @@ export function QuestionStep({
       }
     >
       <TopBar onBack={onBack} speak={question} progress={progress} />
-      <View style={{ flex: 1, justifyContent: 'center', minHeight: 200 }}>
+      <View style={styles.questionBody}>
+        {icon ? (
+          <Text style={styles.questionIcon} allowFontScaling={false} accessible={false}>
+            {icon}
+          </Text>
+        ) : null}
         <AppText variant="display" bold center accessibilityRole="header">
           {question}
         </AppText>
@@ -165,20 +174,20 @@ export function StudyPictures({ pictures, onBack, onDone }: { pictures: Picture[
   const { t } = useTranslation();
   const [index, setIndex] = useState(0);
   const [showing, setShowing] = useState(false);
+  // Read the latest onDone without restarting the picture timer when the parent re-renders.
+  const advance = useEffectEvent((i: number) => {
+    setShowing(false);
+    if (i + 1 >= pictures.length) onDone();
+    else setIndex(i + 1);
+  });
   useEffect(() => {
     const gap = setTimeout(() => setShowing(true), 600);
-    const next = setTimeout(() => {
-      setShowing(false);
-      if (index + 1 >= pictures.length) onDone();
-      else setIndex(index + 1);
-    }, 600 + TASK_SETTINGS.memoryStudyMs);
+    const next = setTimeout(() => advance(index), 600 + TASK_SETTINGS.memoryStudyMs);
     return () => {
       clearTimeout(gap);
       clearTimeout(next);
     };
-    // onDone is stable enough for a one-shot sequence; re-running on it would restart the timer.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [index, pictures.length]);
+  }, [index]);
   return (
     <Screen scroll={false}>
       <TopBar
@@ -287,6 +296,7 @@ export function SymbolMatch({
     finished.current = true;
     onDone({ correct: correct.current, attempted: attempted.current });
   };
+  const timeUp = useEffectEvent(finish);
 
   useEffect(() => {
     if (practice) return;
@@ -296,14 +306,13 @@ export function SymbolMatch({
       setRemaining(Math.max(0, left));
       if (left <= 0) {
         clearInterval(id);
-        finish();
+        timeUp();
       }
     }, 250);
     return () => clearInterval(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [practice]);
 
-  const digitOf = (shape: ShapeId) => form.key.find((k) => k.shape === shape)!.digit;
+  const digitOf = (shape: ShapeId) => form.key.find((k) => k.shape === shape)?.digit ?? 0;
 
   const tap = (digit: number) => {
     if (finished.current) return;
@@ -392,9 +401,30 @@ export function GoNoGo({
   const [index, setIndex] = useState(0);
   const [visible, setVisible] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
-  const responses = useRef<AttentionResponse[]>(trials.map((tr) => ({ go: tr.go, tapped: false })));
+  const [initialResponses] = useState(() => trials.map((tr): AttentionResponse => ({ go: tr.go, tapped: false })));
+  const responses = useRef(initialResponses);
   const onset = useRef(0);
   const name = pictureInSentence(target, language);
+
+  // Timer callbacks read the latest props without restarting the trial timing.
+  const hidePicture = useEffectEvent((i: number) => {
+    setVisible(false);
+    if (!practice) return;
+    const r = responses.current[i];
+    setFeedback(
+      r.go
+        ? r.tapped
+          ? t('checkin.good')
+          : t('checkin.attention.missed', { target: name })
+        : r.tapped
+          ? t('checkin.attention.wrongTap', { target: name })
+          : t('checkin.attention.rightSkip'),
+    );
+  });
+  const nextTrial = useEffectEvent((i: number) => {
+    if (i + 1 >= trials.length) onDone(responses.current);
+    else setIndex(i + 1);
+  });
 
   useEffect(() => {
     const lead = index === 0 ? 1200 : 0;
@@ -404,32 +434,14 @@ export function GoNoGo({
       setFeedback(null);
       setVisible(true);
     }, lead);
-    const hide = setTimeout(() => {
-      setVisible(false);
-      if (practice) {
-        const r = responses.current[index];
-        setFeedback(
-          r.go
-            ? r.tapped
-              ? t('checkin.good')
-              : t('checkin.attention.missed', { target: name })
-            : r.tapped
-              ? t('checkin.attention.wrongTap', { target: name })
-              : t('checkin.attention.rightSkip'),
-        );
-      }
-    }, lead + TASK_SETTINGS.attentionStimulusMs);
-    const next = setTimeout(() => {
-      if (index + 1 >= trials.length) onDone(responses.current);
-      else setIndex(index + 1);
-    }, lead + TASK_SETTINGS.attentionStimulusMs + gap);
+    const hide = setTimeout(() => hidePicture(index), lead + TASK_SETTINGS.attentionStimulusMs);
+    const next = setTimeout(() => nextTrial(index), lead + TASK_SETTINGS.attentionStimulusMs + gap);
     return () => {
       clearTimeout(show);
       clearTimeout(hide);
       clearTimeout(next);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [index]);
+  }, [index, practice]);
 
   const tap = () => {
     const r = responses.current[index];
@@ -479,6 +491,8 @@ const styles = StyleSheet.create({
   topBar: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   art: { alignItems: 'center', marginVertical: space.sm },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.md },
+  questionBody: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: space.md, paddingVertical: space.md },
+  questionIcon: { fontSize: 88, textAlign: 'center' },
   stage: {
     borderRadius: radius.lg,
     backgroundColor: colors.surface,

@@ -1,5 +1,6 @@
 // Geometry of the monthly trend chart, shared by the report screen (react-native-svg) and the
 // printable summary (an SVG string), so both always draw the same picture.
+import { colors } from '../theme/tokens.ts';
 import type { EngineSummary, Status } from './changeEngine.ts';
 
 export type ChartPoint = { x: number; y: number; value: number; status: Status; mayBeAffected: boolean; date: string };
@@ -45,9 +46,4 @@ export function chartGeometry(engine: EngineSummary, width: number, height: numb
   };
 }
 
-export const STATUS_COLOR: Record<Status, string> = {
-  baseline: '#8A8F8C',
-  stable: '#2E6C34',
-  repeat: '#C77A12',
-  seeDoctor: '#B4442C',
-};
+export const STATUS_COLOR: Record<Status, string> = colors.status;

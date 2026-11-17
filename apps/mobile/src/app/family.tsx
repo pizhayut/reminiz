@@ -60,7 +60,7 @@ export default function Family() {
                   onPress={() => setAnswers((prev) => ({ ...prev, [k]: a }))}
                   style={[styles.choice, selected && styles.choiceSelected]}
                 >
-                  <AppText variant="body" bold={selected} center>
+                  <AppText variant="small" bold={selected} center numberOfLines={1}>
                     {t(`family.answer.${a}`)}
                   </AppText>
                 </Pressable>

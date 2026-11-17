@@ -16,6 +16,14 @@ export type ContextAnswers = {
   ready: YesNo;
 };
 
+/** Order the context questions are asked and listed in. */
+export const CONTEXT_KEYS = ['sleptWell', 'unwell', 'stressed', 'ready'] as const satisfies readonly (keyof ContextAnswers)[];
+
+/** True when the answer is the one that may affect the result (slept badly, unwell, stressed, not ready). */
+export function contextConcern(key: keyof ContextAnswers, answer: YesNo): boolean {
+  return key === 'sleptWell' || key === 'ready' ? answer === 'no' : answer === 'yes';
+}
+
 export type RawScores = {
   /** Symbol match: correct answers in 60 seconds. */
   symbol: number;

@@ -6,7 +6,7 @@ import type { TFunction } from 'i18next';
 import type { EngineSummary } from '@/checkin/changeEngine';
 import { chartGeometry, STATUS_COLOR } from '@/checkin/chart';
 import { FAMILY_ITEMS, familySuggestsDoctor, familyYesCount, type FamilyReport } from '@/checkin/family';
-import type { CheckIn } from '@/checkin/scoring';
+import { CONTEXT_KEYS, contextConcern, type CheckIn } from '@/checkin/scoring';
 import type { Language } from '@/i18n';
 import { formatDay, monthShort } from '@/lib/dates';
 import { localDay } from '@/lib/tree';
@@ -62,8 +62,7 @@ export function buildSummaryHtml({
     .map((r) => {
       const c = byId.get(r.id);
       const notes = c
-        ? (['sleptWell', 'unwell', 'stressed', 'ready'] as const)
-            .filter((k) => (k === 'sleptWell' || k === 'ready' ? c.context[k] === 'no' : c.context[k] === 'yes'))
+        ? CONTEXT_KEYS.filter((k) => contextConcern(k, c.context[k]))
             .map((k) => t(`report.contextFlag.${k}`))
             .join(', ')
         : '';

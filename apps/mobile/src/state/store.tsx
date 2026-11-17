@@ -156,7 +156,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       clearData: () =>
         update((s) =>
           s.demo
-            ? { ...(s.beforeDemo ?? empty), language: s.language, demo: false, beforeDemo: null }
+            ? // Everything back as it was, including the language the demo link switched to English.
+              { ...(s.beforeDemo ?? empty), demo: false, beforeDemo: null }
             : { ...empty, language: s.language, demo: false, beforeDemo: null },
         ),
     }),

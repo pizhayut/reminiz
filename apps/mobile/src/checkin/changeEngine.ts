@@ -118,7 +118,7 @@ export function runChangeEngine(checkIns: readonly CheckIn[], params: RciParams 
       rci,
       declined,
       mayBeAffected: affected,
-      declineStreak: affected ? streak : declined ? streak : 0,
+      declineStreak: streak,
       status,
     };
   });

@@ -145,10 +145,10 @@ const en = {
       },
     },
     chip: {
-      baseline: 'Setting usual range',
+      baseline: 'Usual range',
       stable: 'Steady',
-      repeat: 'Repeat in 1–2 weeks',
-      seeDoctor: 'Talk to a doctor',
+      repeat: 'Repeat',
+      seeDoctor: 'See a doctor',
       affected: 'May be off: slept badly or unwell',
     },
     chart: {
@@ -172,7 +172,7 @@ const en = {
       title: 'Family questions',
       answeredOn: 'Answered on {{date}}, compared with 6 months before',
       none: 'No answers yet.',
-      answer: 'Answer the family questions',
+      answer: 'Answer family questions',
       suggestsDoctor: 'Family noticed {{count}} changes: consider talking to a doctor.',
       noConcern: 'Family noticed {{count}} of 5 changes.',
       separateNote: 'This comes from the family questions and is separate from the check-in results.',

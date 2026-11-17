@@ -10,6 +10,7 @@ import { attentionForm, formFor, memoryForm, MEMORY_PRACTICE, symbolForm } from 
 import {
   attentionScore,
   compositeScore,
+  CONTEXT_KEYS,
   memoryScore,
   type CheckIn,
   type ContextAnswers,
@@ -33,10 +34,17 @@ import { localDay } from '@/lib/tree';
 import { useStore } from '@/state/store';
 import { space } from '@/theme/tokens';
 
+// Pictures for the context questions (Unicode ≤ 11, like the game).
+const CONTEXT_ICONS: Record<(typeof CONTEXT_KEYS)[number], string> = {
+  sleptWell: '😴',
+  unwell: '💊',
+  stressed: '😟',
+  ready: '👓',
+};
+
 // A frame, not one of the pictures to remember.
 const MEMORY_INTRO_ART = { id: 'frame', emoji: '🖼️', en: 'Picture', th: 'ภาพ' };
 
-const CONTEXT_KEYS = ['sleptWell', 'unwell', 'stressed', 'ready'] as const;
 
 type Step =
   | { name: 'intro' }
@@ -140,6 +148,7 @@ export default function CheckInScreen() {
       return (
         <QuestionStep
           key={`${step.q}-${step.note ? 1 : 0}`}
+          icon={CONTEXT_ICONS[key]}
           question={t(`checkin.context.${key}`)}
           progress={t('checkin.context.progress', { current: step.q + 1, total: CONTEXT_KEYS.length })}
           note={step.note ? t('checkin.context.readyTip') : undefined}

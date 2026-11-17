@@ -14,7 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 import { useTranslation } from 'react-i18next';
 
-import { colors, maxFontScale, radius, space, tapTarget, type } from '@/theme/tokens';
+import { colors, contentMaxWidth, maxFontScale, radius, space, tapTarget, type } from '@/theme/tokens';
 import { useStore } from '@/state/store';
 import { say, stopSpeaking, useCanSpeak } from '@/lib/speech';
 
@@ -71,16 +71,16 @@ export function Screen({
   transparent?: boolean;
 }) {
   const body = scroll ? (
-    <ScrollView contentContainerStyle={[styles.content, style]} showsVerticalScrollIndicator={false}>
+    <ScrollView contentContainerStyle={[styles.content, styles.column, style]} showsVerticalScrollIndicator={false}>
       {children}
     </ScrollView>
   ) : (
-    <View style={[styles.content, { flex: 1 }, style]}>{children}</View>
+    <View style={[styles.content, styles.column, { flex: 1 }, style]}>{children}</View>
   );
   return (
     <SafeAreaView style={[styles.screen, transparent && { backgroundColor: 'transparent' }]} edges={['top', 'bottom', 'left', 'right']}>
       {body}
-      {footer ? <View style={styles.footer}>{footer}</View> : null}
+      {footer ? <View style={[styles.footer, styles.column]}>{footer}</View> : null}
     </SafeAreaView>
   );
 }
@@ -89,6 +89,7 @@ export function BigButton({
   label,
   onPress,
   kind = 'primary',
+  size = 'large',
   style,
   accessibilityHint,
   color = colors.primary,
@@ -97,12 +98,15 @@ export function BigButton({
   label: string;
   onPress: () => void;
   kind?: 'primary' | 'secondary';
+  /** 'compact' for buttons inside cards: secondary height and body-size text. */
+  size?: 'large' | 'compact';
   style?: StyleProp<ViewStyle>;
   accessibilityHint?: string;
   color?: string;
   pressedColor?: string;
 }) {
   const primary = kind === 'primary';
+  const large = primary && size === 'large';
   return (
     <Pressable
       accessibilityRole="button"
@@ -112,7 +116,7 @@ export function BigButton({
       style={({ pressed }) => [
         styles.button,
         primary
-          ? { backgroundColor: pressed ? pressedColor : color, minHeight: tapTarget.primary }
+          ? { backgroundColor: pressed ? pressedColor : color, minHeight: large ? tapTarget.primary : tapTarget.secondary }
           : {
               backgroundColor: pressed ? colors.primarySoft : colors.surface,
               borderColor: colors.primary,
@@ -123,7 +127,7 @@ export function BigButton({
       ]}
     >
       <AppText
-        variant={primary ? 'title' : 'body'}
+        variant={large ? 'title' : 'body'}
         bold
         center
         style={{ color: primary ? colors.onPrimary : colors.primary }}
@@ -217,6 +221,7 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
   content: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.xl, gap: space.md },
   footer: { paddingHorizontal: space.lg, paddingBottom: space.md, paddingTop: space.sm, gap: space.sm },
+  column: { width: '100%', maxWidth: contentMaxWidth, alignSelf: 'center' },
   button: {
     borderRadius: radius.md,
     alignItems: 'center',

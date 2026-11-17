@@ -20,6 +20,13 @@ export const colors = {
   border: '#D9D5CC',
   trunk: '#8A6A4E',
   onPrimary: '#FFFFFF',
+  /** "Demo data" badge: a colour used nowhere else, so it never looks like real data. */
+  demo: '#5B3FA0',
+  /** Emergency signs only. */
+  danger: '#B3261E',
+  dangerSoft: '#FCECEA',
+  /** Check-in result colours (report and printout). Each passes WCAG AA on white. */
+  status: { baseline: '#6B716E', stable: '#2E6C34', repeat: '#A35F00', seeDoctor: '#B4442C' },
 } as const;
 
 export const space = { xs: 6, sm: 12, md: 20, lg: 28, xl: 40 } as const;
@@ -28,6 +35,9 @@ export const radius = { md: 20, lg: 28, pill: 999 } as const;
 
 /** Minimum height of tappable controls on older adult screens (CLAUDE.md asks for ≥ 56pt). */
 export const tapTarget = { primary: 76, secondary: 60, icon: 64 } as const;
+
+/** On tablets and desktop browsers the app stays a phone-width column instead of stretching. */
+export const contentMaxWidth = 560;
 
 export const type = {
   display: 34,
