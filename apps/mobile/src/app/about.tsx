@@ -87,6 +87,7 @@ export default function About() {
         <AppText variant="small">{t('demo.body')}</AppText>
         {demo ? (
           <>
+            <BigButton label={t('demo.openReport')} onPress={() => router.push('/report')} />
             <BigButton kind="secondary" label={t('demo.clear')} onPress={clearData} />
             <AppText variant="small" muted>
               {t('demo.clearHint')}
@@ -116,6 +117,8 @@ export default function About() {
           </>
         )}
       </Card>
+
+      <TextLink label={t('about.report')} onPress={() => router.push('/report')} />
 
       <Card warm>
         <AppText variant="small">{t('about.privacy')}</AppText>

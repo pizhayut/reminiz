@@ -1,7 +1,7 @@
 import { Redirect, router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { setStatusBarStyle } from 'expo-status-bar';
 import { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, View, useWindowDimensions } from 'react-native';
+import { Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { DemoBadge } from '@/components/DemoBadge';
@@ -85,12 +85,16 @@ export default function Home() {
         </View>
 
         {demo ? (
-          <View style={styles.demoBanner}>
+          <Pressable
+            accessibilityRole="link"
+            onPress={() => router.push('/report')}
+            style={({ pressed }) => [styles.demoBanner, pressed && { opacity: 0.85 }]}
+          >
             <DemoBadge />
-            <AppText variant="small" bold style={{ flex: 1, color: colors.primary }}>
-              {t('demo.banner')}
+            <AppText variant="small" bold style={{ flex: 1, color: colors.primary, textDecorationLine: 'underline' }}>
+              {t('demo.openReport')} →
             </AppText>
-          </View>
+          </Pressable>
         ) : null}
 
         <View

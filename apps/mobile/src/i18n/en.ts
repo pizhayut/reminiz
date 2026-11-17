@@ -117,6 +117,73 @@ const en = {
       home: 'Back to my tree',
     },
   },
+  report: {
+    title: 'Check-in report',
+    subtitle: 'For family and doctors: how {{name}}’s monthly check-ins compare with {{name}}’s own usual range. Not a diagnosis.',
+    defaultName: 'your family member',
+    latestResult: 'Latest result',
+    empty: 'No check-ins yet. The first two check-ins set the usual range.',
+    print: 'Print 1-page summary',
+    status: {
+      baseline: {
+        title: 'Getting to know the usual range',
+        body: 'The first 2 check-ins set {{name}}’s usual range ({{count}} of 2 done). Changes are shown from the third check-in on.',
+      },
+      stable: {
+        title: 'Results are steady',
+        body: 'The latest check-in is within {{name}}’s usual range. You can see a doctor at any time if you notice changes.',
+      },
+      repeat: {
+        title: 'Repeat the check-in in 1–2 weeks',
+        body: 'The latest result is lower than {{name}}’s usual range. One lower result is common and often settles on a repeat. This is not a diagnosis.',
+        affected:
+          '{{name}} slept badly or was unwell (or changed medicines) before this check-in, so the result may be off. Please repeat it in 1–2 weeks.',
+      },
+      seeDoctor: {
+        title: 'Talk to a doctor',
+        body: 'The last 2 check-ins were both lower than {{name}}’s usual range. This is a possible change, not a diagnosis. A doctor can look into it: bring the 1-page summary.',
+      },
+    },
+    chip: {
+      baseline: 'Setting usual range',
+      stable: 'Steady',
+      repeat: 'Repeat in 1–2 weeks',
+      seeDoctor: 'Talk to a doctor',
+      affected: 'May be off: slept badly or unwell',
+    },
+    chart: {
+      title: 'Monthly check-in results',
+      baseline: 'Usual range (average of first 2)',
+      declineLine: 'A drop below this line is a real change',
+      note: 'Each dot is one check-in (higher is better). A hollow dot means the result may be off.',
+    },
+    history: { title: 'Every check-in' },
+    context: {
+      title: 'Before the latest check-in',
+      subtitle: 'Answers given on {{date}}',
+    },
+    contextFlag: {
+      sleptWell: 'slept badly',
+      unwell: 'unwell or new medicine',
+      stressed: 'stressed or tired',
+      ready: 'not in a quiet place / no glasses',
+    },
+    family: {
+      title: 'Family questions',
+      answeredOn: 'Answered on {{date}}, compared with 6 months before',
+      none: 'No answers yet.',
+      answer: 'Answer the family questions',
+      suggestsDoctor: 'Family noticed {{count}} changes: consider talking to a doctor.',
+      noConcern: 'Family noticed {{count}} of 5 changes.',
+      separateNote: 'This comes from the family questions and is separate from the check-in results.',
+    },
+    next: {
+      title: 'If you see a doctor',
+      body: 'Go to your hospital or local health centre (in Thailand, a รพ.สต.) under your health coverage, and bring this 1-page summary. Universal Coverage and Social Security usually start at your registered primary care unit.',
+    },
+    disclaimer:
+      'Reminiz is not a medical device. It does not diagnose any condition. Results are signals that something may have changed, to talk over with a doctor.',
+  },
   family: {
     title: 'Questions for family',
     intro: 'For a family member who knows {{name}} well. Compared with 6 months ago, is this true for {{name}}?',
@@ -133,6 +200,19 @@ const en = {
     missing: 'Please answer all 5 questions.',
     saved: 'Saved. Thank you.',
   },
+  emergency: {
+    button: 'Emergency signs',
+    title: 'Call 1669 now if there is any of these, suddenly:',
+    signs: {
+      weakness: 'Weakness or numbness on one side of the body',
+      face: 'Face drooping on one side',
+      speech: 'Trouble speaking, or slurred speech',
+      confusion: 'Sudden confusion',
+      fall: 'A fall with a head injury',
+    },
+    call: 'Call {{number}}',
+    note: 'Do not wait for a check-in. 1669 is the emergency number in Thailand.',
+  },
   demo: {
     badge: 'Demo data',
     title: 'Demo for judges',
@@ -145,6 +225,25 @@ const en = {
     banner: 'Demo data is loaded.',
     openReport: 'See the family report',
     printNote: 'Demo data: made up for the Future Health Challenge, not a real person.',
+  },
+  summary: {
+    title: 'Reminiz check-in summary',
+    forPerson: 'For: {{name}}',
+    printed: 'Printed {{date}}',
+    legend: 'Combined score of 3 tasks (higher is better). Green dashed line: usual range (average of the first 2 check-ins). Red dotted line: below it, a drop counts as a reliable change. Hollow dot: slept badly or unwell before the check-in.',
+    method:
+      'Tasks: Symbol match (correct in 60 s), Picture memory (seen − false alarms, delayed), Attention go/no-go (accuracy of 40). Alternate forms A/B/C. Change = Reliable Change Index (Jacobson & Truax) of the combined z-score; −1.645 or lower counts as a decline. Thresholds are provisional.',
+    emergency: 'Weakness or numbness on one side, face drooping, trouble speaking, sudden confusion, or a fall with a head injury.',
+    cols: {
+      date: 'Date',
+      form: 'Form',
+      symbol: 'Symbols',
+      memory: 'Memory',
+      attention: 'Attention',
+      composite: 'Combined',
+      status: 'Result',
+      notes: 'Before the check-in',
+    },
   },
   about: {
     title: 'About Reminiz',
@@ -159,6 +258,7 @@ const en = {
     termsLink: 'Terms of use',
     supportLink: 'Help and contact',
     credits: 'Made by Renz Soft Co., Ltd.',
+    report: 'Check-in report (for family)',
     close: 'Close',
   },
   common: {
